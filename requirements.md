@@ -526,16 +526,20 @@ app/
                         # remove each entry as its real page lands, then delete the file
 components/
   layout/   Header.tsx  NavDropdown.tsx  MobileMenu.tsx  Footer.tsx  Logo.tsx  navStyles.ts
-  ui/       Button.tsx  Container.tsx  Section.tsx  SectionHeading.tsx  Eyebrow.tsx
-            Card.tsx  Badge.tsx  Accordion.tsx  Icon.tsx  IconCircleArrow.tsx
+  ui/       Button.tsx  Container.tsx  Section.tsx  SectionHeading.tsx  Eyebrow.tsx  Overline.tsx
+            Card.tsx  Badge.tsx  Accordion.tsx  Breadcrumb.tsx  Icon.tsx  IconCircleArrow.tsx
   motion/   MotionProvider.tsx  Reveal.tsx  Stagger.tsx  Orbit.tsx  easing.ts
+  sections/ PageHero.tsx (inner-page h1 + breadcrumb)  Process.tsx  ProcessTimeline.tsx
+            BookingCta.tsx (props override the homepage copy)
   sections/home/  Hero.tsx  HeroVisual.tsx  QuickCards.tsx  ServicesSection.tsx
             ServiceExplorer.tsx  ServiceAccordion.tsx  ServicePanel.tsx
-            CaseStudiesPreview.tsx  AcademyPreview.tsx  Process.tsx  ProcessTimeline.tsx
-            AboutPreview.tsx  Testimonials.tsx  LatestPosts.tsx  FaqSection.tsx  BookingCta.tsx
+            CaseStudiesPreview.tsx  AcademyPreview.tsx  AboutPreview.tsx
+            Testimonials.tsx  LatestPosts.tsx  FaqSection.tsx
+  services/ ServiceCard.tsx  ServiceIntro.tsx  ServiceIncluded.tsx  ServiceDelivery.tsx
+            ServiceProof.tsx  ServicePricing.tsx  ServiceFaq.tsx  OtherServices.tsx
   case-studies/  CaseStudyCard.tsx
   booking/  BookingForm.tsx  steps/*
-content/    site.ts (nav, footer, socials, contact)  home.ts (homepage copy)  services.ts
+content/    site.ts (nav, footer, socials, contact)  home.ts (homepage copy)  process.ts  services.ts
             academy.ts  courses.ts  caseStudies.ts  testimonials.ts  faqs.ts  booking.ts
             posts.ts (→ blog/*.mdx in Phase 5)
 lib/        cn.ts  types.ts

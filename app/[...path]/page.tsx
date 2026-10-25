@@ -6,15 +6,12 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { academyCategories } from "@/content/academy";
 import { caseStudies } from "@/content/caseStudies";
 import { posts } from "@/content/posts";
-import { services } from "@/content/services";
 import { primaryCta } from "@/content/site";
 
 // Temporary placeholders so every link resolves while later phases build the real pages
 // (requirements.md §5.2). A real route always wins over this catch-all; delete an entry
 // once its page exists, and this file once the list is empty.
 const plannedPages: Record<string, string> = {
-  services: "Services",
-  ...Object.fromEntries(services.map((s) => [`services/${s.slug}`, s.title])),
   book: "Book a Consultation",
   academy: "Learning Academy",
   ...Object.fromEntries(academyCategories.map((c) => [`academy/${c.slug}`, c.title])),

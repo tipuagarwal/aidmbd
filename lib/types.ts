@@ -8,7 +8,8 @@ export type IconName =
   | "headset"
   | "bot"
   | "file-text"
-  | "terminal";
+  | "terminal"
+  | "graduation-cap";
 
 export type LinkItem = {
   label: string;
@@ -32,11 +33,20 @@ export type Service = {
   /** One line for cards and the mega-menu. */
   summary: string;
   description: string;
+  /** The problem the service solves, for the detail page intro. */
+  problem: string;
   audience: string[];
   subServices: string[];
-  /** Scope, pricing and trust notes from the plan. */
+  /** What the client receives. */
+  deliverables: string[];
+  /** Scope and delivery assumptions from the plan. */
   notes: string[];
   pricing: string;
+  /** Third-party costs billed separately from our fee. */
+  extraCosts: string[];
+  /** Maintenance and support after delivery. */
+  support: string;
+  faqs: Array<{ question: string; answer: string }>;
   cta: LinkItem;
   secondaryCta?: LinkItem;
 };

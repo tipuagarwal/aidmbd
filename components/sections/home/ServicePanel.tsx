@@ -2,11 +2,10 @@ import { Check } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
+import { Overline } from "@/components/ui/Overline";
 import type { Service } from "@/lib/types";
 
 const VISIBLE_SUB_SERVICES = 8;
-
-const labelClasses = "text-xs font-medium uppercase tracking-[0.2em] text-titanium-500";
 
 type ServicePanelProps = {
   service: Service;
@@ -33,7 +32,7 @@ export function ServicePanel({ service, showTitle = true }: ServicePanelProps) {
       <p className="mt-5 leading-relaxed text-titanium-300 first:mt-0">{service.description}</p>
 
       <div className="mt-6">
-        <p className={labelClasses}>Who it&apos;s for</p>
+        <Overline>Who it&apos;s for</Overline>
         <ul className="mt-3 flex flex-wrap gap-2">
           {service.audience.map((audience) => (
             <li key={audience}>
@@ -44,7 +43,7 @@ export function ServicePanel({ service, showTitle = true }: ServicePanelProps) {
       </div>
 
       <div className="mt-8">
-        <p className={labelClasses}>What&apos;s included</p>
+        <Overline>What&apos;s included</Overline>
         <ul className="mt-4 grid gap-x-6 gap-y-3 sm:grid-cols-2">
           {visible.map((item) => (
             <li key={item} className="flex gap-3 text-sm leading-snug text-titanium-300">

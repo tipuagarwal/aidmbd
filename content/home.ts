@@ -1,5 +1,6 @@
 import type { Service, Step } from "@/lib/types";
 import { bookingHref } from "./booking";
+import { processSteps } from "./process";
 import { site } from "./site";
 
 // Homepage copy. Section order and intent: requirements.md §6.
@@ -44,29 +45,7 @@ export const academySection = {
 export const processSection = {
   eyebrow: "How we work",
   title: "From first conversation to long-term support.",
-  steps: [
-    {
-      title: "Discovery",
-      description: "We learn your goals, users and constraints, and agree on what success looks like.",
-    },
-    {
-      title: "Proposal & Scope",
-      description:
-        "You get a clear proposal: deliverables, timeline, revisions, support period and every cost, including third-party ones.",
-    },
-    {
-      title: "Build",
-      description: "We design and build in small steps and share progress, so you can give feedback early.",
-    },
-    {
-      title: "Review & Launch",
-      description: "We test together, fix what needs fixing, and launch when you're ready.",
-    },
-    {
-      title: "Support & Maintenance",
-      description: "We stay available for the agreed support period, with maintenance plans if you need them.",
-    },
-  ] satisfies Step[],
+  steps: processSteps,
 };
 
 export const aboutSection = {

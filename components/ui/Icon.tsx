@@ -3,6 +3,7 @@ import {
   BrainCircuit,
   CodeXml,
   FileText,
+  GraduationCap,
   Headset,
   Megaphone,
   Sparkles,
@@ -23,6 +24,7 @@ const icons = {
   bot: Bot,
   "file-text": FileText,
   terminal: SquareTerminal,
+  "graduation-cap": GraduationCap,
 } satisfies Record<IconName, LucideIcon>;
 
 type IconProps = LucideProps & { name: IconName };
