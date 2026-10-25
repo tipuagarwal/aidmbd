@@ -1,8 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { services } from "@/content/services";
 import { site } from "@/content/site";
 import "./globals.css";
+
+const menuServices = services.map(({ slug, title, summary, icon }) => ({ slug, title, summary, icon }));
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -34,10 +39,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <MotionProvider>
-          {/* Header and Footer arrive in Phase 1. */}
+          <Header services={menuServices} />
           <main id="main" className="flex-1">
             {children}
           </main>
+          <Footer />
         </MotionProvider>
       </body>
     </html>

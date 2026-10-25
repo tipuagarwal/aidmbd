@@ -1,4 +1,9 @@
-import type { AcademyCategory } from "@/lib/types";
+import type { AcademyCategory, CourseFormat } from "@/lib/types";
+
+export const courseFormats: Record<CourseFormat, string> = {
+  live: "Live",
+  recorded: "Recorded",
+};
 
 // Source: requirements.md §8. Individual courses (fees, schedules, instructors) come in Phase 4.
 export const academyCategories: AcademyCategory[] = [

@@ -25,7 +25,7 @@
 - To add:
   - `motion`: Framer Motion under its current package name. Import from `"motion/react"`.
   - `lucide-react`: line icons, matching the reference's copper outline icons.
-- Keep dependencies minimal. No UI kit, no CSS-in-JS. Write a small `cn()` helper instead of adding `clsx`.
+- Keep dependencies minimal. No UI kit, no CSS-in-JS. `cn()` in `lib/cn.ts` wraps `tailwind-merge`, so a `className` passed to a primitive reliably overrides its defaults (added in Phase 1 after plain class-joining let `inline-flex` beat `hidden`).
 
 ---
 
@@ -226,7 +226,7 @@ The bottom bar has the logo, the tagline "PRACTICAL AI. REAL BUSINESS IMPACT.", 
     - pricing format
     - the service-specific CTA plus **View details →**
 - **Mobile/tablet**: the same data rendered as an accordion of 6 cards.
-- Under the section: "Not sure which service fits? **Book a free consultation →**"
+- Under the section: "Not sure which service fits? **Book a consultation →**" (don't say "free" unless the client confirms there's no fee; the plan allows paid meeting types).
 - **Done when**: works by keyboard (arrow keys move between tabs), all 6 link to their detail pages, and everything is driven from `content/services.ts`.
 
 ### 6.3 Featured Case Studies
@@ -522,17 +522,22 @@ app/
   academy/page.tsx  academy/[category]/page.tsx  academy/courses/[slug]/page.tsx
   case-studies/…  blog/…  about/  careers/  contact/  faq/  policies/[slug]/
   not-found.tsx  sitemap.ts  robots.ts  icon.png  opengraph-image.png
+  [...path]/page.tsx    # TEMPORARY "coming soon" pages for routes later phases build;
+                        # remove each entry as its real page lands, then delete the file
 components/
-  layout/   Header.tsx  NavDropdown.tsx  MobileMenu.tsx  Footer.tsx  Logo.tsx
-  ui/       Button.tsx  Container.tsx  Section.tsx  SectionHeading.tsx (eyebrow + title)
-            Card.tsx  Badge.tsx  Accordion.tsx  IconCircleArrow.tsx
-  motion/   MotionProvider.tsx  Reveal.tsx  Stagger.tsx  Orbit.tsx
-  sections/home/  Hero.tsx  QuickCards.tsx  ServicesSection.tsx  ServiceExplorer.tsx
-            CaseStudiesPreview.tsx  AcademyPreview.tsx  Process.tsx  AboutPreview.tsx
-            Testimonials.tsx  LatestPosts.tsx  FaqSection.tsx  BookingCta.tsx
+  layout/   Header.tsx  NavDropdown.tsx  MobileMenu.tsx  Footer.tsx  Logo.tsx  navStyles.ts
+  ui/       Button.tsx  Container.tsx  Section.tsx  SectionHeading.tsx  Eyebrow.tsx
+            Card.tsx  Badge.tsx  Accordion.tsx  Icon.tsx  IconCircleArrow.tsx
+  motion/   MotionProvider.tsx  Reveal.tsx  Stagger.tsx  Orbit.tsx  easing.ts
+  sections/home/  Hero.tsx  HeroVisual.tsx  QuickCards.tsx  ServicesSection.tsx
+            ServiceExplorer.tsx  ServiceAccordion.tsx  ServicePanel.tsx
+            CaseStudiesPreview.tsx  AcademyPreview.tsx  Process.tsx  ProcessTimeline.tsx
+            AboutPreview.tsx  Testimonials.tsx  LatestPosts.tsx  FaqSection.tsx  BookingCta.tsx
+  case-studies/  CaseStudyCard.tsx
   booking/  BookingForm.tsx  steps/*
-content/    site.ts (nav, footer, socials, contact)  services.ts  courses.ts
-            academy.ts  caseStudies.ts  testimonials.ts  faqs.ts  booking.ts  blog/*.mdx
+content/    site.ts (nav, footer, socials, contact)  home.ts (homepage copy)  services.ts
+            academy.ts  courses.ts  caseStudies.ts  testimonials.ts  faqs.ts  booking.ts
+            posts.ts (→ blog/*.mdx in Phase 5)
 lib/        cn.ts  types.ts
 public/brand/  logo.png  logo-mark.png      public/images/  founder.png  case-studies/*
 ```

@@ -41,6 +41,9 @@ export type Service = {
   secondaryCta?: LinkItem;
 };
 
+/** The slice of a service the navigation menus need. */
+export type ServiceSummary = Pick<Service, "slug" | "title" | "summary" | "icon">;
+
 export type BookingType = {
   slug: string;
   title: string;
@@ -85,6 +88,8 @@ export type CaseStudy = {
   results: string[];
   limitations?: string;
   relatedService: Service["slug"];
+  /** Shown in the homepage preview. */
+  featured?: boolean;
 };
 
 export type FaqGroup = "services" | "courses" | "support" | "pricing";
@@ -94,4 +99,38 @@ export type Faq = {
   group: FaqGroup;
   question: string;
   answer: string;
+};
+
+export type BlogCategory =
+  | "ai-ml"
+  | "automation"
+  | "content"
+  | "marketing"
+  | "web"
+  | "programming"
+  | "research"
+  | "updates";
+
+export type Post = {
+  slug: string;
+  title: string;
+  category: BlogCategory;
+  excerpt: string;
+  author: string;
+  readingMinutes: number;
+  /** ISO date. Unset until the article is published. */
+  publishedAt?: string;
+};
+
+export type Testimonial = {
+  id: string;
+  quote: string;
+  name: string;
+  role: string;
+  kind: "client" | "student";
+};
+
+export type Step = {
+  title: string;
+  description: string;
 };

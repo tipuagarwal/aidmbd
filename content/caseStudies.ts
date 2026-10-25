@@ -1,11 +1,11 @@
-import type { CaseStudy, CaseStudyCategory } from "@/lib/types";
+import type { CaseStudy, CaseStudyCategory, IconName } from "@/lib/types";
 
-export const caseStudyCategories: Record<CaseStudyCategory, string> = {
-  "ai-automation": "AI Automation",
-  "web-development": "Web Development",
-  "data-ml": "Data & ML",
-  content: "Content",
-  marketing: "Marketing",
+export const caseStudyCategories: Record<CaseStudyCategory, { label: string; icon: IconName }> = {
+  "ai-automation": { label: "AI Automation", icon: "workflow" },
+  "web-development": { label: "Web Development", icon: "code" },
+  "data-ml": { label: "Data & ML", icon: "brain-circuit" },
+  content: { label: "Content", icon: "sparkles" },
+  marketing: { label: "Marketing", icon: "megaphone" },
 };
 
 // Seed data: the demo projects suggested in the plan (requirements §10).
@@ -20,6 +20,7 @@ export const caseStudies: CaseStudy[] = [
     solution: "One dashboard that brings orders, capacity and schedules together and flags orders at risk of running late.",
     results: [],
     relatedService: "web-development",
+    featured: true,
   },
   {
     slug: "demand-forecasting-system",
@@ -41,6 +42,7 @@ export const caseStudies: CaseStudy[] = [
     solution: "A bilingual assistant that answers from an approved knowledge base and hands over to a person when unsure.",
     results: [],
     relatedService: "ai-automation",
+    featured: true,
   },
   {
     slug: "lead-follow-up-workflow",
@@ -61,5 +63,6 @@ export const caseStudies: CaseStudy[] = [
     solution: "A portal where students enroll, watch lessons, track progress and find every resource in one place.",
     results: [],
     relatedService: "web-development",
+    featured: true,
   },
 ];
