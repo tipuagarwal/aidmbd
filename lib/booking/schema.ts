@@ -7,7 +7,7 @@ import {
   timeSlots,
   timelines,
 } from "@/content/booking";
-import { cleanText, isEmail } from "@/lib/forms";
+import { cleanText, isEmail, isWebsite } from "@/lib/forms";
 import type { BookingField } from "@/lib/types";
 import { addDays, isIsoDate, isValidTimeZone, todayIn } from "./time";
 
@@ -93,15 +93,6 @@ export function normalizeBooking(input: Partial<Record<string, unknown>>): Booki
   return values;
 }
 
-function isWebsite(value: string) {
-  try {
-    const url = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
-    return url.hostname.includes(".");
-  } catch {
-    return false;
-  }
-}
-
 /** Expects normalized values. `interests` lists the allowed interest values. */
 export function validateBooking(values: BookingValues, interests: readonly string[], now = new Date()) {
   const errors: BookingErrors = {};
@@ -133,7 +124,7 @@ export function validateBooking(values: BookingValues, interests: readonly strin
     if (value && !options.includes(value)) errors[name as BookingFieldName] = bookingErrors.choice;
   }
   if (!values.message) errors.message = bookingErrors.message;
-  else if (values.message.length < MESSAGE_MIN) errors.message = bookingErrors.messageShort(MESSAGE_MIN);
+  else if (values.message.length < MESSAGE_MIN) errors.message = bookingErrors.tooShort(MESSAGE_MIN);
 
   for (const [name, max] of Object.entries(maxLengths)) {
     const field = name as keyof typeof maxLengths;

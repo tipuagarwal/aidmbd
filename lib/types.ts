@@ -170,17 +170,33 @@ export type CaseStudyCategory =
   | "content"
   | "marketing";
 
+export type CaseStudyStatus = "in-development" | "complete";
+
 export type CaseStudy = {
   slug: string;
   title: string;
   category: CaseStudyCategory;
   /** Self-made samples must be labelled "Demo Project". */
   isDemo: boolean;
+  /** In-development demos show their brief; results and screenshots come once complete. */
+  status: CaseStudyStatus;
+  /** One line for the page intro. */
+  summary: string;
+  /** Who it's for and the situation they're in. */
+  context: string;
   problem: string;
+  objectives: string[];
+  scope: string[];
+  /** AIDMBD's part in the work. */
+  role: string;
   solution: string;
+  /** What the solution does, feature by feature. */
+  features: string[];
   /** Verified results only. Leave empty until measured. */
   results: string[];
   limitations?: string;
+  screenshots?: Array<{ src: string; alt: string }>;
+  demoUrl?: string;
   relatedService: Service["slug"];
   /** Shown in the homepage preview. */
   featured?: boolean;
@@ -211,9 +227,13 @@ export type Post = {
   category: BlogCategory;
   excerpt: string;
   author: string;
+  /** Rounded up at about 220 words a minute. */
   readingMinutes: number;
-  /** ISO date. Unset until the article is published. */
-  publishedAt?: string;
+  /** ISO dates. */
+  publishedAt: string;
+  updatedAt?: string;
+  /** The course or service the article leads to (requirements §11). */
+  related: LinkItem & { kind: "course" | "service" };
 };
 
 export type Testimonial = {

@@ -73,3 +73,17 @@ export const faqs: Faq[] = [
       "No. Our fee is always shown separately from third-party costs such as advertising budgets, tool or API subscriptions, hosting and domains.",
   },
 ];
+
+export const faqPage = {
+  description: "Answers to common questions about AIDMBD's services, courses, support and pricing.",
+  eyebrow: "FAQ",
+  title: "Frequently asked questions.",
+  intro: "Answers about our services, courses, support and pricing. If yours isn't here, ask us directly.",
+  jump: "Jump to",
+  more: {
+    title: "Still have a question?",
+    intro: "Send us a message, or book a consultation and ask us directly.",
+    contact: { label: "Contact us", href: "/contact" },
+    book: { label: "Book a Consultation", href: "/book" },
+  },
+};

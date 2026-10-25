@@ -4,6 +4,7 @@ import { useRef, useState, useTransition, type FormEvent } from "react";
 import { flushSync } from "react-dom";
 import { ArrowLeft, LoaderCircle } from "lucide-react";
 import { submitBookingRequest } from "@/app/book/actions";
+import { Honeypot } from "@/components/forms/FormParts";
 import { Button } from "@/components/ui/Button";
 import { Overline } from "@/components/ui/Overline";
 import { bookingErrors, bookingPage } from "@/content/booking";
@@ -20,7 +21,6 @@ import {
   type InterestGroup,
 } from "@/lib/booking/schema";
 import { bookingSummary } from "@/lib/booking/summary";
-import { HONEYPOT_FIELD } from "@/lib/forms";
 import { BookingSuccess } from "./BookingSuccess";
 import { StepIndicator } from "./StepIndicator";
 import { DetailsStep } from "./steps/DetailsStep";
@@ -151,10 +151,7 @@ export function BookingFlow({ interestGroups, initialType = "", initialInterest 
         />
       </div>
 
-      <div aria-hidden className="sr-only">
-        <label htmlFor={HONEYPOT_FIELD}>{bookingPage.honeypot}</label>
-        <input id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
-      </div>
+      <Honeypot id="booking-homepage" />
 
       <div className="mt-10 flex flex-col-reverse gap-3 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
         {step > 0 ? (

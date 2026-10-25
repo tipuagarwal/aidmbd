@@ -1,5 +1,6 @@
 import type { BookingFieldName } from "@/lib/booking/schema";
 import type { BookingType, BookingTypeSlug, Step, TimeSlot } from "@/lib/types";
+import { formCopy } from "./forms";
 
 // Draft details to confirm with the client (requirements §9.1): durations, formats, what to
 // prepare, budget ranges and the rescheduling terms. Fees stay "agreed before the meeting"
@@ -139,23 +140,15 @@ export const bookingHints: Partial<Record<BookingFieldName, string>> = {
 };
 
 export const bookingErrors = {
+  ...formCopy.errors,
   type: "Choose a meeting type.",
   interest: "Choose what you'd like to discuss.",
   date: "Choose a preferred date.",
   dateRange: (days: number) => `Choose a date between tomorrow and ${days} days from now.`,
   slot: "Choose a time slot.",
   timeZone: "Choose your timezone.",
-  fullName: "Enter your full name.",
-  email: "Enter your email address.",
-  emailFormat: "Enter a valid email address, like name@example.com.",
   phone: "Enter a valid phone or WhatsApp number.",
-  website: "Enter a valid website address, like example.com.",
-  choice: "Choose one of the options.",
   message: "Tell us what you'd like to discuss.",
-  messageShort: (min: number) => `Tell us a little more: at least ${min} characters.`,
-  tooLong: (max: number) => `Keep this under ${max.toLocaleString("en")} characters.`,
-  send: "We couldn't send your request just now. Please try again in a few minutes.",
-  network: "We couldn't reach our server. Check your connection and try again.",
 };
 
 const howItWorks: Step[] = [
@@ -207,7 +200,6 @@ export const bookingPage = {
     privacy: { label: "Privacy Policy", href: "/policies/privacy" },
   },
   actions: { back: "Back", next: "Continue", submit: "Send request", sending: "Sending…" },
-  honeypot: "Leave this field empty",
   success: {
     title: "Request received — we'll confirm by email.",
     intro: (name: string, email: string) =>

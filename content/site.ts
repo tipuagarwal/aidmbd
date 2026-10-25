@@ -50,7 +50,7 @@ export const footerGroups: FooterGroup[] = [
     title: "Support",
     links: [
       { label: "FAQ", href: "/faq" },
-      { label: "Student Support", href: "/contact" },
+      { label: "Student Support", href: "/contact#student-support" },
       { label: "Certificate Verification", href: "/certificate-verification", soon: true },
     ],
   },
@@ -64,3 +64,15 @@ export const footerGroups: FooterGroup[] = [
     ],
   },
 ];
+
+export const notFoundPage = {
+  eyebrow: "Error 404",
+  title: "This page doesn't exist.",
+  intro: "The link may be broken, or the page may have moved. These pages are a good place to start.",
+  links: [
+    { label: "Home", href: "/" },
+    { label: "Services", href: "/services" },
+    { label: "Learning Academy", href: "/academy" },
+    { label: "Contact", href: "/contact" },
+  ] satisfies LinkItem[],
+};

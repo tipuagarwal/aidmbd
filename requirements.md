@@ -499,6 +499,28 @@ Each type shows its duration, its fee (if any), its format (online or in person)
 - **FAQ**: services, courses, support, pricing.
 - **Policies**: Privacy Policy, Terms of Service, Course Refund Policy, Cancellation (project cancellation and payment terms), and certificate conditions.
 
+### 12.1 How Phase 5 implements §10–12
+- **Case studies** (`/case-studies`, `/case-studies/[slug]`):
+  - A category filter (component state) with an empty state.
+  - Each page follows §10 in order: context and problem with objectives, scope and AIDMBD's role, solution and features, results and limitations, then **Discuss a Similar Project** (pre-selects the related service in `/book`).
+  - All five suggested demos are listed openly as **Demo Project · In development**. Pages show a screenshot placeholder and "measured results will be published once complete, never estimates". The briefs are drafts.
+  - When a demo is finished, add its `screenshots`, `demoUrl` and verified `results` and set `status: "complete"`. The forecasting demo must then state its data, test period, baseline and limitations.
+- **Blog** (`/blog`, `/blog/[slug]`):
+  - Posts are MDX (`content/blog/<slug>.mdx`, imported by the route) with typed metadata in `content/posts.ts`. Reading time is counted at 220 words a minute.
+  - Each post shows the author, date, category, reading time and a related course or service.
+  - The three launch articles are full drafts dated 25 October 2026. Confirm the author and set the dates at launch.
+  - `mdx-components.tsx` styles long-form text.
+- **About**: purpose, the two halves of the business, principles, delivery process, and team roles at `#team`. The founder section appears only once `founder` in `content/about.ts` has a real photo and a verifiable bio.
+- **Careers**: why AIDMBD, openings (none, so "No current openings"), how roles' terms differ, the hiring process, a talent pool form and an applicant privacy note. CV upload waits for Phase 7.
+- **Contact**: a contact form with topics (including Student support at `#student-support`, where the footer link lands) and booking. Email, phone and WhatsApp show once `contactDetails` is set.
+- **FAQ**: every FAQ, grouped, with jump links.
+- **Policies** (`/policies/[slug]`, MDX): privacy, terms (including certificate conditions), refund and cancellation.
+  - These are plain-English drafts that describe only what the site does: its four forms, Resend for email, and no analytics cookies.
+  - Specific promises (refund windows, project cancellation terms, retention periods) are left to the course page or proposal rather than invented.
+  - **They need legal review before launch**, and then an `updatedAt` date.
+- **Forms**: contact, talent pool and the course waitlist share `components/forms/useFormSubmission.ts` (browser checks, focus on the first error, keeping errors in sync with the server's), `FormParts.tsx` and `lib/submit.ts` (honeypot, validate again, email). All three work without JavaScript.
+- **404**: the temporary catch-all is gone and `app/not-found.tsx` (built early, from Phase 6) handles unknown URLs with a real 404.
+
 ## 13. Student dashboard and admin (Phase 7, needs backend decisions)
 - **Student dashboard**: My Courses and Continue Learning · lesson and module list · recorded video player · upcoming live classes with join link · class recordings · notes, code and resources · assignment submission · quiz and progress · instructor feedback · support · certificate · payment history and invoices.
   - Live flow: Enroll → Schedule → Join Class → Recording → Assignment.
@@ -560,10 +582,11 @@ app/
   services/page.tsx  services/[slug]/page.tsx
   book/page.tsx  book/actions.ts
   academy/page.tsx  academy/[category]/page.tsx  academy/courses/[slug]/page.tsx
-  case-studies/…  blog/…  about/  careers/  contact/  faq/  policies/[slug]/
-  not-found.tsx  sitemap.ts  robots.ts  icon.png  opengraph-image.png
-  [...path]/page.tsx    # TEMPORARY "coming soon" pages for routes later phases build;
-                        # remove each entry as its real page lands, then delete the file
+  academy/actions.ts  contact/actions.ts  careers/actions.ts   # Server Actions
+  case-studies/page.tsx  case-studies/[slug]/page.tsx  blog/page.tsx  blog/[slug]/page.tsx
+  about/  careers/  contact/  faq/  policies/[slug]/page.tsx
+  not-found.tsx  robots.ts  icon.png  apple-icon.png   (sitemap.ts, opengraph-image in Phase 6)
+mdx-components.tsx      # long-form styles for MDX posts and policies
 components/
   layout/   Header.tsx  NavDropdown.tsx  MobileMenu.tsx  Footer.tsx  Logo.tsx  navStyles.ts
   ui/       Button.tsx  Container.tsx  Section.tsx  SectionHeading.tsx  Eyebrow.tsx  Overline.tsx
@@ -579,7 +602,11 @@ components/
             Testimonials.tsx  LatestPosts.tsx  FaqSection.tsx
   services/ ServiceCard.tsx  ServiceIntro.tsx  ServiceIncluded.tsx  ServiceDelivery.tsx
             ServiceProof.tsx  ServicePricing.tsx  ServiceFaq.tsx  OtherServices.tsx
-  case-studies/  CaseStudyCard.tsx
+  case-studies/  CaseStudyCard.tsx  CaseStudyArt.tsx (placeholder art)  CaseStudyCatalog.tsx (client)
+            detail/  CaseStudyHero.tsx  CaseStudyMedia.tsx  CaseStudyStory.tsx
+  blog/     PostCard.tsx  BlogCatalog.tsx (client)
+  forms/    useFormSubmission.ts  FormParts.tsx (Honeypot, FormAlert, SubmitRow, FormSuccess)
+  contact/  ContactForm.tsx      careers/  TalentPoolForm.tsx
   academy/  CategoryCard.tsx  CourseCard.tsx  FormatCard.tsx (Live or Recorded)
             CourseCatalog.tsx (client: filters + grid)  WaitlistForm.tsx (client)
             category/  CategorySyllabus.tsx  ResearchPath.tsx
@@ -592,9 +619,11 @@ components/
 content/    site.ts (nav, footer, socials, contact)  home.ts (homepage copy)  process.ts  services.ts
             academy.ts (paths + Academy copy)  courses.ts  caseStudies.ts  testimonials.ts  faqs.ts
             booking.ts (types, slots, options, labels, errors, page copy)
-            posts.ts (→ blog/*.mdx in Phase 5)
-lib/        cn.ts  types.ts  forms.ts (honeypot, email check, text cleanup)
-            email.ts (server-only Resend delivery)  waitlist.ts (shared validator)
+            posts.ts + blog/*.mdx  policies.ts + policies/*.mdx  about.ts  careers.ts  contact.ts
+            forms.ts (copy shared by every form)
+lib/        cn.ts  types.ts  format.ts (dates)  forms.ts (types, honeypot, checks, text cleanup)
+            email.ts (server-only Resend delivery)  submit.ts (server-only shared action body)
+            waitlist.ts  contactForm.ts  talentPool.ts (shared validators)
   booking/  schema.ts (shared validator)  time.ts (timezone helpers)  summary.ts (review and email rows)
             interests.ts (options built on the server)  email.ts (formats the meeting request)
 .env.example   # RESEND_API_KEY, EMAIL_TO, EMAIL_FROM
@@ -668,7 +697,7 @@ Build `/book` as the multi-step request flow (§9) with a Server Action. Deliver
 Case Studies (filters and detail pages), Blog (MDX, categories), About (with `#team`), Careers (no-openings state and talent pool), Contact, FAQ, Policies.
 
 ### Phase 6: SEO and polish
-- `sitemap.ts`, `robots.ts`, OG images, JSON-LD, `not-found.tsx`.
+- `sitemap.ts`, OG images, JSON-LD. (`robots.ts` shipped in Phase 1 and `not-found.tsx` in Phase 5.)
 - Full accessibility and Lighthouse pass, plus an image optimization review.
 - Optional: start the Bangla version through a `[lang]` segment (read `02-guides/internationalization.md`). The language switch opens the same page in the other language.
 
@@ -691,6 +720,10 @@ Auth and student dashboard, payments, admin panel, calendar booking (invites, re
 - [ ] Business email, contact details and meeting availability
 - [ ] Booking details: duration, fee and format per meeting type, what to prepare, budget ranges and currency, rescheduling terms (drafts in `content/booking.ts`)
 - [ ] A Resend account with a verified sending domain, and the inbox that receives requests
+- [ ] Build the demo projects (or supply real client work) with screenshots and measured results (`content/caseStudies.ts`)
+- [ ] Legal review of the four policy drafts in `content/policies/`, then publish dates
+- [ ] Confirm the three draft blog articles, their author and publish dates
+- [ ] Team roles on About, the Careers copy and hiring process, and any real openings
 - [ ] The 2–3 courses to open first, each with fee (BDT/USD), schedule, instructor, duration, support and access terms; confirmation of the draft course text and teaching language in `content/courses.ts`
 - [ ] Decisions on payment, refund and cancellation
 - [ ] Domain and the necessary account access

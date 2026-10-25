@@ -1,0 +1,66 @@
+A good machine learning paper is easy to follow, honest about what it shows and possible for someone else to reproduce. Structure does a lot of that work. If every section has a clear job, reviewers can find what they need, and you'll notice gaps in your own work before they do.
+
+## Start with one sentence
+
+Before you write any section, write your research question in a single sentence, then write the contribution you're claiming in a second one. For example: "Can a smaller model match a larger one on Bangla text classification? We show that with targeted fine-tuning it comes within a stated margin on two public datasets."
+
+Every section of the paper should support those two sentences. If a paragraph doesn't, it probably belongs somewhere else, or nowhere.
+
+## Section by section
+
+### Abstract
+
+The problem, what you did, the main result with a number, and why it matters, all in one paragraph. Write it last, once you know what the paper actually shows.
+
+### Introduction
+
+Explain the problem and why it matters, what existing work leaves open, and what you did about it. Finish with a short, specific list of contributions. Readers should know exactly what's new by the end of the introduction.
+
+### Related work
+
+Group earlier work by theme rather than listing papers one by one, and say how your work differs from each group. The goal is to place your contribution, not to show how much you've read.
+
+### Method
+
+Describe your approach precisely enough for someone to implement it. Define notation once and use it consistently. Explain why you made key design choices, not just what they were.
+
+### Experimental setup
+
+This is where many first papers fall short. State clearly:
+
+- The datasets, how they were split, and any cleaning you did
+- The baselines you compare against, and why they're fair comparisons
+- The evaluation metrics, and why they suit the task
+- Implementation details: model sizes, key hyperparameters, random seeds and compute used
+
+### Results
+
+Lead with the main comparison against your baselines. Use tables for exact numbers and figures for trends. Report variation across runs where you can, rather than a single best result. Describe what the results show, and save interpretation for the discussion.
+
+### Discussion and limitations
+
+Explain what the results mean, where your method works less well, and what you didn't test. A clear limitations section makes a paper more credible, not less.
+
+### Conclusion
+
+Restate the contribution and the main evidence for it in a few sentences, and suggest what should come next.
+
+## Make it reproducible
+
+Reproducibility is part of the paper's quality, not an extra. Keep your code and configuration files under version control. Record dataset versions and preprocessing steps, fix and report random seeds, and note software versions. If you can, share code and data, or explain clearly why you can't.
+
+## Mistakes to avoid
+
+- **Overclaiming.** Your conclusions should be no stronger than your evidence.
+- **Weak or missing baselines.** A method only looks good compared with something reasonable.
+- **Reporting only the best run.** Cherry-picked results don't hold up when others try to reproduce them.
+- **Test-set leakage.** Never tune decisions on the data you report final results on.
+- **Unverified references.** Check every citation against the original source. AI writing tools can produce references that look real but don't exist, and a fabricated citation can seriously damage a paper's credibility.
+
+## Before you submit
+
+Choose a journal or conference whose scope fits your work, and follow its template and guidelines exactly. Ask someone outside the project to read the draft: if they can't state your contribution after reading the introduction, revise it.
+
+Peer review is demanding, and no course, mentor or tool can guarantee acceptance. Clear structure, honest results and careful reproducibility give your work the best chance of a fair reading.
+
+If you'd like structured guidance through this process, our [Research Paper Writing for AI & ML](/academy/courses/research-paper-writing) course covers each stage, from research question to submission, with feedback on your draft.

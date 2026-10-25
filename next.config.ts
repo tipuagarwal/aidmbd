@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
+import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   experimental: {
     agentFeedback: true,
   },
@@ -17,4 +17,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Blog posts and policies are MDX files imported by their routes (requirements §11).
+const withMDX = createMDX();
+
+export default withMDX(nextConfig);

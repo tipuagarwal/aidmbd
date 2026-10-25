@@ -1,5 +1,4 @@
 import type { AcademyCategory, Course, CourseFormat, CourseLevel } from "@/lib/types";
-import { bookingErrors } from "./booking";
 
 export const courseFormats: Record<CourseFormat, string> = {
   live: "Live",
@@ -302,18 +301,10 @@ export const waitlistForm = {
   labels: { fullName: "Full name", email: "Email", format: "Preferred format" },
   formatOptions: { live: "Live classes", recorded: "Recorded", either: "Either works" },
   submit: { waitlist: "Join the waitlist", enrolling: "Send enrollment request" },
-  sending: "Sending…",
   privacy: "We'll only use your email for this course. See our",
-  privacyLink: { label: "Privacy Policy", href: "/policies/privacy" },
-  honeypot: "Leave this field empty",
   errors: {
     course: "This course isn't open for requests. Refresh the page and try again.",
-    fullName: bookingErrors.fullName,
-    email: bookingErrors.email,
-    emailFormat: bookingErrors.emailFormat,
     format: "Choose a format.",
-    tooLong: bookingErrors.tooLong,
-    send: bookingErrors.send,
   },
   success: {
     waitlist: {

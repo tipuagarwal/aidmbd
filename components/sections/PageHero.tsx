@@ -14,10 +14,12 @@ type PageHeroProps = {
   children?: ReactNode;
   /** Optional right-hand column on large screens. */
   aside?: ReactNode;
+  /** Smaller title for long ones, such as article headlines. */
+  compact?: boolean;
 };
 
 /** Opening section for inner pages. Holds the page's only h1. */
-export function PageHero({ breadcrumbs, eyebrow, title, intro, children, aside }: PageHeroProps) {
+export function PageHero({ breadcrumbs, eyebrow, title, intro, children, aside, compact = false }: PageHeroProps) {
   const hasAside = Boolean(aside);
 
   return (
@@ -32,7 +34,10 @@ export function PageHero({ breadcrumbs, eyebrow, title, intro, children, aside }
           <Eyebrow className="mt-10">{eyebrow}</Eyebrow>
           <h1
             id="page-title"
-            className="mt-5 max-w-3xl text-balance text-[clamp(2.25rem,5vw,3.75rem)] font-extrabold leading-[1.05] tracking-tight"
+            className={cn(
+              "mt-5 max-w-3xl text-balance font-extrabold tracking-tight",
+              compact ? "text-[clamp(2rem,4vw,3rem)] leading-[1.1]" : "text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.05]",
+            )}
           >
             {title}
           </h1>

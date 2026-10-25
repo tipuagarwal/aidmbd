@@ -1,95 +1,34 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState, type FormEvent } from "react";
-import Link from "next/link";
-import { Check, CircleAlert, LoaderCircle } from "lucide-react";
 import { joinCourseList } from "@/app/academy/actions";
-import { Button } from "@/components/ui/Button";
+import { FormAlert, FormSuccess, Honeypot, SubmitRow } from "@/components/forms/FormParts";
+import { useFormSubmission } from "@/components/forms/useFormSubmission";
 import { ChoiceCard } from "@/components/ui/ChoiceCard";
 import { FieldError, TextField } from "@/components/ui/Field";
 import { waitlistForm as copy } from "@/content/academy";
-import { HONEYPOT_FIELD } from "@/lib/forms";
 import type { Course } from "@/lib/types";
-import {
-  ANY_FORMAT,
-  normalizeWaitlist,
-  validateWaitlist,
-  waitlistFieldNames,
-  waitlistMaxLengths,
-  type WaitlistErrors,
-  type WaitlistFieldName,
-  type WaitlistState,
-} from "@/lib/waitlist";
+import { ANY_FORMAT, normalizeWaitlist, validateWaitlist, waitlistFieldNames, waitlistMaxLengths } from "@/lib/waitlist";
 
 type WaitlistFormProps = {
   course: Pick<Course, "slug" | "title" | "formats" | "status">;
 };
 
-const initialState: WaitlistState = { status: "idle" };
-
-// Stable, so the heading is focused once when the message appears, not on every render.
-const focusOnMount = (node: HTMLElement | null) => node?.focus();
-
-function focusFirstError(form: HTMLFormElement | null, found: WaitlistErrors) {
-  const first = waitlistFieldNames.find((name) => found[name]);
-  form?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
-}
-
-/**
- * Waitlist or enrollment request for one course. Posts straight to a Server Action, so it also
- * works before JavaScript loads; the browser checks the same rules first for instant feedback.
- */
+/** Waitlist or enrollment request for one course. Works without JavaScript. */
 export function WaitlistForm({ course }: WaitlistFormProps) {
-  const [state, formAction, pending] = useActionState(joinCourseList, initialState);
-  const [clientErrors, setClientErrors] = useState<WaitlistErrors | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const serverErrors = state.status === "error" ? (state.errors ?? {}) : {};
-  const errors = clientErrors ?? serverErrors;
-  // Submitted values come back with the result, so a failed send keeps what was typed.
-  const values = state.status === "idle" ? undefined : state.values;
+  const { state, formAction, pending, formRef, errors, values, onSubmit, clearError } = useFormSubmission({
+    action: joinCourseList,
+    fields: waitlistFieldNames,
+    validate: (data) => validateWaitlist(normalizeWaitlist(Object.fromEntries(data)), course.formats),
+  });
   const formats = course.formats.length > 1 ? [...course.formats, ANY_FORMAT] : [];
-
-  // Errors found by the server: focus the first one once the response arrives.
-  useEffect(() => {
-    if (state.status === "error" && state.errors) focusFirstError(formRef.current, state.errors);
-  }, [state]);
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    const found = validateWaitlist(normalizeWaitlist(Object.fromEntries(new FormData(event.currentTarget))), course.formats);
-    if (Object.keys(found).length > 0) {
-      event.preventDefault();
-      setClientErrors(found);
-      focusFirstError(event.currentTarget, found);
-      return;
-    }
-    setClientErrors(null);
-  }
-
-  function clearError(name: WaitlistFieldName) {
-    setClientErrors((previous) => {
-      const current = previous ?? serverErrors;
-      return current[name] ? { ...current, [name]: undefined } : previous;
-    });
-  }
 
   if (state.status === "success") {
     const success = copy.success[course.status];
-    return (
-      <div className="motion-safe:animate-fade-up">
-        <span className="flex size-12 items-center justify-center rounded-full border border-copper-500/40 bg-copper-500/10 shadow-glow">
-          <Check aria-hidden className="size-6 text-copper-400" />
-        </span>
-        <h3 ref={focusOnMount} tabIndex={-1} className="mt-5 text-xl font-semibold focus:outline-none">
-          {success.title}
-        </h3>
-        <p className="mt-3 leading-relaxed text-titanium-500">{success.intro(course.title, state.values.email)}</p>
-      </div>
-    );
+    return <FormSuccess title={success.title}>{success.intro(course.title, state.values.email)}</FormSuccess>;
   }
 
   return (
-    <form ref={formRef} action={formAction} onSubmit={handleSubmit} noValidate className="space-y-6">
+    <form ref={formRef} action={formAction} onSubmit={onSubmit} noValidate className="space-y-6">
       <input type="hidden" name="course" value={course.slug} />
       <TextField
         id="waitlist-fullName"
@@ -137,38 +76,10 @@ export function WaitlistForm({ course }: WaitlistFormProps) {
         </fieldset>
       )}
 
-      <div aria-hidden className="sr-only">
-        <label htmlFor={`waitlist-${HONEYPOT_FIELD}`}>{copy.honeypot}</label>
-        <input id={`waitlist-${HONEYPOT_FIELD}`} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
-      </div>
-
+      <Honeypot id="waitlist-homepage" />
       <FieldError id="waitlist-course-error" message={errors.course} />
-      {state.status === "error" && state.message && (
-        <p
-          role="alert"
-          className="flex items-start gap-3 rounded-lg border border-danger-500/40 bg-danger-500/10 p-4 text-sm text-danger-400"
-        >
-          <CircleAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
-          {state.message}
-        </p>
-      )}
-
-      <div className="flex flex-col gap-4 pt-2">
-        <Button type="submit" size="lg" arrow={!pending} disabled={pending} className="w-full">
-          {pending && <LoaderCircle aria-hidden className="size-4 motion-safe:animate-spin" />}
-          {pending ? copy.sending : copy.submit[course.status]}
-        </Button>
-        <p className="text-sm leading-relaxed text-titanium-500">
-          {copy.privacy}{" "}
-          <Link href={copy.privacyLink.href} className="text-copper-400 underline decoration-copper-400/40 underline-offset-4 transition-colors hover:text-copper-300 hover:decoration-copper-300">
-            {copy.privacyLink.label}
-          </Link>
-          .
-        </p>
-      </div>
-      <p aria-live="polite" className="sr-only">
-        {pending ? copy.sending : ""}
-      </p>
+      <FormAlert message={state.status === "error" ? state.message : undefined} />
+      <SubmitRow label={copy.submit[course.status]} pending={pending} privacy={copy.privacy} />
     </form>
   );
 }

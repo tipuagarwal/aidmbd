@@ -1,0 +1,57 @@
+When a large language model doesn't do quite what you need, there are three main ways to adapt it: better prompting, retrieval-augmented generation (RAG) and fine-tuning. They solve different problems, cost different amounts and fail in different ways. Choosing well starts with being clear about what's actually wrong.
+
+## Prompting: change the instructions
+
+Prompting means improving what you send the model: clearer instructions, a defined output format, relevant context and a few worked examples.
+
+**It works well when** the model already has the knowledge and skill the task needs, and just needs better direction. Classification, summarising, extraction into a fixed format and drafting text often reach a good standard with careful prompting alone.
+
+**It struggles when** the task depends on information the model never saw, such as your internal documents or anything that changed after its training data was collected. Long prompts also cost more on every request, and very complex instructions can be followed inconsistently.
+
+Prompting is the cheapest approach to try and the quickest to change, which is why it should almost always come first.
+
+## RAG: give the model the right information
+
+Retrieval-augmented generation adds a search step. When a question comes in, the system finds the most relevant passages in your own documents and includes them in the prompt, so the model answers from that material.
+
+**It works well when** answers depend on knowledge that is private, specialised or changing: product manuals, policies, a support knowledge base or research notes. Because the source passages are known, answers can point to where they came from, which makes them easier to check.
+
+**It struggles when** retrieval returns the wrong passages. Poorly split documents, outdated indexes and questions phrased differently from the source text all lead to confident answers built on the wrong material. Most RAG problems are retrieval problems, so the retrieval step needs its own testing, separate from the final answers.
+
+## Fine-tuning: change the model's behaviour
+
+Fine-tuning trains the model further on examples of the inputs and outputs you want. It changes how the model behaves by default.
+
+**It works well when** you need a consistent style, tone or output format, or a narrow task done reliably with shorter prompts. A fine-tuned smaller model can sometimes match a larger general model on one specific task at lower running cost.
+
+**It struggles when** it's used to add knowledge. Fine-tuning isn't a dependable way to teach a model new facts, especially facts that change. It also needs a good set of high-quality training examples, and the model has to be retrained and re-evaluated when requirements change.
+
+## How to decide
+
+Ask what kind of problem you have:
+
+- **The model doesn't follow the task properly.** Improve the prompt first: clearer instructions, examples and an explicit output format.
+- **The model doesn't know the information.** Use RAG, so answers come from your current documents.
+- **The behaviour is still inconsistent after good prompting.** Consider fine-tuning, especially for format, tone or a narrow repeated task.
+
+These approaches combine well. A support assistant might use RAG for knowledge, a carefully written prompt for tone and rules, and only later a fine-tuned model if volume makes it worthwhile.
+
+## Measure before you choose
+
+Every one of these decisions should be tested, not argued. Before changing anything, build an evaluation set: real examples of inputs, with what a good output looks like for each. Start with a few dozen and grow it as you find new failure cases.
+
+Then:
+
+1. Score a well-prompted baseline on the evaluation set.
+2. Try the next approach and score it on the same set.
+3. Compare quality, cost per request and response time together.
+
+A change that improves quality slightly but triples the cost may not be worth it. A RAG system that answers well but cites the wrong source isn't ready. Keep the evaluation set, and run it again whenever the model, the prompt or the documents change.
+
+## A sensible order
+
+1. Start with prompting and an evaluation set.
+2. Add RAG when the gap is knowledge.
+3. Fine-tune only when prompting and retrieval have been pushed as far as they reasonably go, and the evaluation shows a clear need.
+
+If you're studying these trade-offs for a research project, our [Advanced LLM Research Methods](/academy/courses/advanced-llm-research) course covers how to compare them rigorously, including evaluation, error analysis and cost reporting.
