@@ -12,7 +12,6 @@ import { primaryCta } from "@/content/site";
 // (requirements.md §5.2). A real route always wins over this catch-all; delete an entry
 // once its page exists, and this file once the list is empty.
 const plannedPages: Record<string, string> = {
-  book: "Book a Consultation",
   academy: "Learning Academy",
   ...Object.fromEntries(academyCategories.map((c) => [`academy/${c.slug}`, c.title])),
   "case-studies": "Case Studies",

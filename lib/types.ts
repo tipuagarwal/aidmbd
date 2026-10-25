@@ -54,10 +54,35 @@ export type Service = {
 /** The slice of a service the navigation menus need. */
 export type ServiceSummary = Pick<Service, "slug" | "title" | "summary" | "icon">;
 
+export type BookingTypeSlug =
+  | "business-consultation"
+  | "project-discussion"
+  | "learning-guidance"
+  | "research-mentorship"
+  | "corporate-training";
+
+/** Optional request fields that only some meeting types ask for. Phone is asked for every type. */
+export type BookingField = "company" | "institution" | "website" | "skillLevel" | "budget" | "timeline";
+
 export type BookingType = {
-  slug: string;
+  slug: BookingTypeSlug;
   title: string;
   topic: string;
+  duration: string;
+  fee: string;
+  format: string;
+  prepare: string[];
+  fields: BookingField[];
+  /** Which list leads the interest picker. */
+  interest: "services" | "courses";
+};
+
+/** A preferred window in the visitor's own timezone, as "HH:MM". */
+export type TimeSlot = {
+  id: string;
+  label: string;
+  start: string;
+  end: string;
 };
 
 export type CourseFormat = "live" | "recorded";

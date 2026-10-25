@@ -26,7 +26,7 @@ const sizes = {
 
 function buttonClasses({ variant = "primary", size = "md" }: ButtonStyle, className?: string) {
   return cn(
-    "group inline-flex items-center justify-center gap-2 rounded-lg font-semibold whitespace-nowrap transition-[background-color,border-color,box-shadow,color] duration-300 ease-brand",
+    "group inline-flex items-center justify-center gap-2 rounded-lg font-semibold whitespace-nowrap transition-[background-color,border-color,box-shadow,color] duration-300 ease-brand disabled:pointer-events-none disabled:opacity-60",
     variants[variant],
     variant !== "link" && sizes[size],
     className,

@@ -424,6 +424,23 @@ Each type shows its duration, its fee (if any), its format (online or in person)
 - **Later**: calendar integration for steps 8–10 (invites, reminders, reschedule/cancel).
 - The booking page states the format, free/paid status, duration, timezone, preparation and cancellation/rescheduling terms.
 
+### 9.4 How Phase 3 implements it
+- **Screens**:
+  1. *Meeting*: type cards, then a details panel showing duration, fee, format and what to prepare (flow steps 1–2). Then the interest picker: services first, or courses first for learning types.
+  2. *Date & time*: date (tomorrow to +90 days), a preferred window (Morning, Midday, Afternoon or Evening) and the timezone. A summary restates the choice, plus the Dhaka-time equivalent when the zones differ (flow steps 3–4).
+  3. *Your details* (flow step 5), with conditional fields per §9.2.
+  4. *Review*, with an Edit link per section (flow step 6).
+  5. *Success* (flow step 7).
+- **One validator** (`lib/booking/schema.ts`) runs per step in the browser and again in the Server Action.
+  - The server re-validates whatever was posted and drops fields the chosen type doesn't ask for.
+  - Server errors reopen the step with the first error.
+- **Static page**: `?type=` and `?service=` are read with `useSearchParams` inside `Suspense`. The fallback is the same form without a pre-selection, so the prerendered HTML is a working form.
+- **Delivery**: `lib/booking/email.ts` posts a plain-text email to Resend's REST API, with the visitor as reply-to. It's configured by `RESEND_API_KEY`, `BOOKING_EMAIL_TO` and `BOOKING_EMAIL_FROM` (see `.env.example`).
+  - Unconfigured in development: the request is logged and the visitor sees success.
+  - Unconfigured in production: the visitor sees an error. A request is never silently dropped.
+- **Spam**: a hidden honeypot field (`homepage`). Bots that fill it get a fake success and nothing is sent.
+- **Draft content** to confirm with the client lives in `content/booking.ts`: durations, formats, what to prepare, budget ranges (USD) and the rescheduling terms. Fees read "Agreed before the meeting" until set.
+
 ---
 
 ## 10. Case Studies
@@ -528,6 +545,7 @@ components/
   layout/   Header.tsx  NavDropdown.tsx  MobileMenu.tsx  Footer.tsx  Logo.tsx  navStyles.ts
   ui/       Button.tsx  Container.tsx  Section.tsx  SectionHeading.tsx  Eyebrow.tsx  Overline.tsx
             Card.tsx  Badge.tsx  Accordion.tsx  Breadcrumb.tsx  Icon.tsx  IconCircleArrow.tsx
+            Field.tsx (TextField, SelectField, TextAreaField, FieldError: label, hint, error, aria wiring)
   motion/   MotionProvider.tsx  Reveal.tsx  Stagger.tsx  Orbit.tsx  easing.ts
   sections/ PageHero.tsx (inner-page h1 + breadcrumb)  Process.tsx  ProcessTimeline.tsx
             BookingCta.tsx (props override the homepage copy)
@@ -538,11 +556,18 @@ components/
   services/ ServiceCard.tsx  ServiceIntro.tsx  ServiceIncluded.tsx  ServiceDelivery.tsx
             ServiceProof.tsx  ServicePricing.tsx  ServiceFaq.tsx  OtherServices.tsx
   case-studies/  CaseStudyCard.tsx
-  booking/  BookingForm.tsx  steps/*
+  booking/  BookingFlow.tsx (client: steps, validation, submit)  BookingFromUrl.tsx (?type/?service)
+            StepIndicator.tsx  ChoiceCard.tsx (radio card)  BookingSuccess.tsx  BookingAside.tsx
+            useBrowserTime.ts (detected timezone, today, zone list)
+            steps/  TypeStep.tsx  TimeStep.tsx  DetailsStep.tsx  ReviewStep.tsx
 content/    site.ts (nav, footer, socials, contact)  home.ts (homepage copy)  process.ts  services.ts
-            academy.ts  courses.ts  caseStudies.ts  testimonials.ts  faqs.ts  booking.ts
+            academy.ts  courses.ts  caseStudies.ts  testimonials.ts  faqs.ts
+            booking.ts (types, slots, options, labels, errors, page copy)
             posts.ts (→ blog/*.mdx in Phase 5)
 lib/        cn.ts  types.ts
+  booking/  schema.ts (shared validator)  time.ts (timezone helpers)  summary.ts (review and email rows)
+            interests.ts (options built on the server)  email.ts (server-only Resend delivery)
+.env.example   # RESEND_API_KEY, BOOKING_EMAIL_TO, BOOKING_EMAIL_FROM
 public/brand/  logo.png  logo-mark.png      public/images/  founder.png  case-studies/*
 ```
 
@@ -634,6 +659,8 @@ Auth and student dashboard, payments, admin panel, calendar booking (invites, re
 - [ ] Course syllabi, preview lessons and instructor details (photo, bio)
 - [ ] Testimonials, with permission
 - [ ] Business email, contact details and meeting availability
+- [ ] Booking details: duration, fee and format per meeting type, what to prepare, budget ranges and currency, rescheduling terms (drafts in `content/booking.ts`)
+- [ ] A Resend account with a verified sending domain, and the inbox that receives requests
 - [ ] Decisions on payment, refund and cancellation
 - [ ] Domain and the necessary account access
 
@@ -641,7 +668,8 @@ Auth and student dashboard, payments, admin panel, calendar booking (invites, re
 | Decision | Default |
 |---|---|
 | Launch language | English first. All copy kept in `content/` so Bangla can be added later. |
-| Where booking and contact submissions go | Server Action → email (e.g. Resend). Calendar integration later. |
+| Where booking and contact submissions go | Server Action → email via Resend (built in Phase 3, see §9.4). Calendar integration later. |
+| Team timezone for confirming requests | Asia/Dhaka. The booking flow shows visitors the Dhaka-time equivalent. |
 | Content source | Typed TS files plus MDX for the blog. Admin/CMS in Phase 7. |
 | Recorded course sales at launch | Waitlist or inquiry until payment and auth are chosen |
 | Hosting | Vercel (native Next.js). Netlify, where the old site lives, also works. |

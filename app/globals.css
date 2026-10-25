@@ -18,6 +18,10 @@
   --color-copper-600: #a35d2c;
   --color-copper-700: #7a431f;
 
+  /* Form errors. Kept clearly red so they never read as copper accents. */
+  --color-danger-400: #f87171;
+  --color-danger-500: #ef4444;
+
   --shadow-glow: 0 0 40px -10px rgb(200 120 63 / 0.45);
   --shadow-glow-strong: 0 0 32px -4px rgb(200 120 63 / 0.6);
 
