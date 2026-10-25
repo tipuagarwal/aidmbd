@@ -119,7 +119,7 @@ export const services: Service[] = [
     ],
     cta: {
       label: "Discuss Your Automation",
-      href: bookingHref("project-discussion", "ai-automation"),
+      href: bookingHref("project-discussion", { service: "ai-automation" }),
     },
   },
   {
@@ -174,7 +174,7 @@ export const services: Service[] = [
     ],
     cta: {
       label: "Request a Content Package",
-      href: bookingHref("project-discussion", "ai-content-creation"),
+      href: bookingHref("project-discussion", { service: "ai-content-creation" }),
     },
   },
   {
@@ -228,7 +228,7 @@ export const services: Service[] = [
     ],
     cta: {
       label: "Plan Your Marketing",
-      href: bookingHref("business-consultation", "digital-marketing"),
+      href: bookingHref("business-consultation", { service: "digital-marketing" }),
     },
   },
   {
@@ -284,7 +284,7 @@ export const services: Service[] = [
     ],
     cta: {
       label: "Start Your Website Project",
-      href: bookingHref("project-discussion", "web-development"),
+      href: bookingHref("project-discussion", { service: "web-development" }),
     },
   },
   {
@@ -336,7 +336,7 @@ export const services: Service[] = [
     ],
     cta: {
       label: "Find Your Support Plan",
-      href: bookingHref("business-consultation", "virtual-assistant"),
+      href: bookingHref("business-consultation", { service: "virtual-assistant" }),
     },
   },
 ];

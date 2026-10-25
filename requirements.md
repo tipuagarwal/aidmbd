@@ -133,6 +133,7 @@ Rule: on hover, a primary button gets a glow. Don't lighten its fill, because a 
   - Service Explorer: tab semantics with arrow-key navigation.
   - Accordions: native `<details>`/`<summary>` or equivalent ARIA.
 - Tap targets are at least 44×44px. Every form field has a label, inline errors and `aria-describedby`.
+- Links inside running text are underlined, not just coloured.
 - All informative images have alt text; decorative SVG (orbit, glow) is `aria-hidden`.
 
 ---
@@ -373,6 +374,27 @@ Pricing formats: **fixed package · custom quote · monthly support**. Each stat
 
 Access and support policies are stated separately for each format.
 
+### 8.4 How Phase 4 implements it
+- **Courses** (`content/courses.ts`): eight courses split from the four paths, as §8.1 allows:
+  - Practical AI Automation (Beginner)
+  - AI & Machine Learning Foundations (Beginner)
+  - Research Paper Writing for AI & ML (Intermediate)
+  - Advanced LLM Research Methods (Advanced, live only, built from the advanced modules)
+  - Python, Java, C and C++ Programming (Beginner)
+
+  Syllabi come from §8.2. Outcomes, prerequisites, projects, resources, assessment, certificate conditions, tool costs and the language are drafts for the client.
+- **Waitlist first.** No course has a confirmed fee, schedule or instructor, so every course has `status: "waitlist"`. Unset fields (instructor, duration, live batch, fee, support, access) render as "Announced at launch" and are never invented.
+  - Setting `status: "enrolling"` switches the copy to "Request enrollment". That covers the 2–3 launch courses once their details are confirmed, until payments exist.
+- **`/academy`**: learning paths, Live vs Recorded cards (`#live`, `#recorded`; the footer links land there), then the catalogue (`#courses`).
+  - Format and level filters are component state. Next keeps the page mounted after navigation, so filters survive a trip to a course and back.
+  - "Browse live courses" filters the grid and moves to it.
+- **`/academy/[category]`**: syllabus (or the four language tracks), the research learner path with its cautions on the research page, the path's courses, the course FAQs, and a guidance booking.
+- **`/academy/courses/[slug]`**: all 13 fields of §8.3, including Live vs Recorded marked "Offered" or "Not offered" for that course.
+- **Waitlist form**: `useActionState` with the Server Action `app/academy/actions.ts`, so it also works without JavaScript.
+  - The same validator (`lib/waitlist.ts`) runs in the browser first.
+  - It has the same honeypot and email delivery as booking.
+- **"Ask a question"** opens `/book` as Learning Guidance, or Research Mentorship for the research path, with the path pre-selected (`?course=`).
+
 ---
 
 ## 9. Booking (`/book`)
@@ -435,7 +457,7 @@ Each type shows its duration, its fee (if any), its format (online or in person)
   - The server re-validates whatever was posted and drops fields the chosen type doesn't ask for.
   - Server errors reopen the step with the first error.
 - **Static page**: `?type=` and `?service=` are read with `useSearchParams` inside `Suspense`. The fallback is the same form without a pre-selection, so the prerendered HTML is a working form.
-- **Delivery**: `lib/booking/email.ts` posts a plain-text email to Resend's REST API, with the visitor as reply-to. It's configured by `RESEND_API_KEY`, `BOOKING_EMAIL_TO` and `BOOKING_EMAIL_FROM` (see `.env.example`).
+- **Delivery**: `lib/email.ts` posts a plain-text email to Resend's REST API, with the visitor as reply-to. Every form shares it. It's configured by `RESEND_API_KEY`, `EMAIL_TO` and `EMAIL_FROM` (see `.env.example`).
   - Unconfigured in development: the request is logged and the visitor sees success.
   - Unconfigured in production: the visitor sees an error. A request is never silently dropped.
 - **Spam**: a hidden honeypot field (`homepage`). Bots that fill it get a fake success and nothing is sent.
@@ -517,6 +539,7 @@ Each type shows its duration, its fee (if any), its format (online or in person)
 | Use the `metadata` / `generateMetadata` exports, plus `app/sitemap.ts`, `app/robots.ts`, `opengraph-image` and Organization JSON-LD. | `01-getting-started/14-metadata-and-og-images.md`, `02-guides/json-ld.md` |
 | Forms use Server Actions with server-side validation. | `02-guides/forms.md`, `02-guides/server-actions.md` |
 | Tailwind v4 is configured in CSS only (`@import "tailwindcss"` + `@theme`). | `01-getting-started/11-css.md` |
+| Dynamic pages whose params are all prerendered export `instant = false` and read params at the top level. Wrapping a large page in `<Suspense>` to satisfy the dev "URL data outside of Suspense" insight makes React paint the fallback first and shifts the layout on direct visits (measured: CLS 0.48). | `02-guides/adopting-partial-prefetching.md`, `03-file-conventions/02-route-segment-config/instant.md` |
 
 ### 15.2 Quality bar
 - Responsive layout, optimized images and fast loading. Targets: Lighthouse **≥90 performance** and **≥95 accessibility, best practices and SEO** on Home and on one service page.
@@ -546,9 +569,10 @@ components/
   ui/       Button.tsx  Container.tsx  Section.tsx  SectionHeading.tsx  Eyebrow.tsx  Overline.tsx
             Card.tsx  Badge.tsx  Accordion.tsx  Breadcrumb.tsx  Icon.tsx  IconCircleArrow.tsx
             Field.tsx (TextField, SelectField, TextAreaField, FieldError: label, hint, error, aria wiring)
+            ChoiceCard.tsx (radio drawn as a card)  FilterPills.tsx (radio filter drawn as pills)
   motion/   MotionProvider.tsx  Reveal.tsx  Stagger.tsx  Orbit.tsx  easing.ts
   sections/ PageHero.tsx (inner-page h1 + breadcrumb)  Process.tsx  ProcessTimeline.tsx
-            BookingCta.tsx (props override the homepage copy)
+            BookingCta.tsx (props override the homepage copy)  FaqBlock.tsx (heading + accordion)
   sections/home/  Hero.tsx  HeroVisual.tsx  QuickCards.tsx  ServicesSection.tsx
             ServiceExplorer.tsx  ServiceAccordion.tsx  ServicePanel.tsx
             CaseStudiesPreview.tsx  AcademyPreview.tsx  AboutPreview.tsx
@@ -556,18 +580,24 @@ components/
   services/ ServiceCard.tsx  ServiceIntro.tsx  ServiceIncluded.tsx  ServiceDelivery.tsx
             ServiceProof.tsx  ServicePricing.tsx  ServiceFaq.tsx  OtherServices.tsx
   case-studies/  CaseStudyCard.tsx
+  academy/  CategoryCard.tsx  CourseCard.tsx  FormatCard.tsx (Live or Recorded)
+            CourseCatalog.tsx (client: filters + grid)  WaitlistForm.tsx (client)
+            category/  CategorySyllabus.tsx  ResearchPath.tsx
+            course/  CourseHero.tsx (with facts)  CourseOverview.tsx  CourseSyllabus.tsx
+                     CourseFormats.tsx  CourseDetails.tsx  CourseEnroll.tsx
   booking/  BookingFlow.tsx (client: steps, validation, submit)  BookingFromUrl.tsx (?type/?service)
-            StepIndicator.tsx  ChoiceCard.tsx (radio card)  BookingSuccess.tsx  BookingAside.tsx
+            StepIndicator.tsx  BookingSuccess.tsx  BookingAside.tsx
             useBrowserTime.ts (detected timezone, today, zone list)
             steps/  TypeStep.tsx  TimeStep.tsx  DetailsStep.tsx  ReviewStep.tsx
 content/    site.ts (nav, footer, socials, contact)  home.ts (homepage copy)  process.ts  services.ts
-            academy.ts  courses.ts  caseStudies.ts  testimonials.ts  faqs.ts
+            academy.ts (paths + Academy copy)  courses.ts  caseStudies.ts  testimonials.ts  faqs.ts
             booking.ts (types, slots, options, labels, errors, page copy)
             posts.ts (→ blog/*.mdx in Phase 5)
-lib/        cn.ts  types.ts
+lib/        cn.ts  types.ts  forms.ts (honeypot, email check, text cleanup)
+            email.ts (server-only Resend delivery)  waitlist.ts (shared validator)
   booking/  schema.ts (shared validator)  time.ts (timezone helpers)  summary.ts (review and email rows)
-            interests.ts (options built on the server)  email.ts (server-only Resend delivery)
-.env.example   # RESEND_API_KEY, BOOKING_EMAIL_TO, BOOKING_EMAIL_FROM
+            interests.ts (options built on the server)  email.ts (formats the meeting request)
+.env.example   # RESEND_API_KEY, EMAIL_TO, EMAIL_FROM
 public/brand/  logo.png  logo-mark.png      public/images/  founder.png  case-studies/*
 ```
 
@@ -661,6 +691,7 @@ Auth and student dashboard, payments, admin panel, calendar booking (invites, re
 - [ ] Business email, contact details and meeting availability
 - [ ] Booking details: duration, fee and format per meeting type, what to prepare, budget ranges and currency, rescheduling terms (drafts in `content/booking.ts`)
 - [ ] A Resend account with a verified sending domain, and the inbox that receives requests
+- [ ] The 2–3 courses to open first, each with fee (BDT/USD), schedule, instructor, duration, support and access terms; confirmation of the draft course text and teaching language in `content/courses.ts`
 - [ ] Decisions on payment, refund and cancellation
 - [ ] Domain and the necessary account access
 
@@ -671,7 +702,7 @@ Auth and student dashboard, payments, admin panel, calendar booking (invites, re
 | Where booking and contact submissions go | Server Action → email via Resend (built in Phase 3, see §9.4). Calendar integration later. |
 | Team timezone for confirming requests | Asia/Dhaka. The booking flow shows visitors the Dhaka-time equivalent. |
 | Content source | Typed TS files plus MDX for the blog. Admin/CMS in Phase 7. |
-| Recorded course sales at launch | Waitlist or inquiry until payment and auth are chosen |
+| Recorded course sales at launch | Waitlist (built in Phase 4), or an enrollment request once a course is confirmed, until payment and auth are chosen |
 | Hosting | Vercel (native Next.js). Netlify, where the old site lives, also works. |
 | Primary nav CTA label | "Book a Consultation", the PDF's suggested natural label |
 

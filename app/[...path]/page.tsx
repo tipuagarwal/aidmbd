@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { ButtonLink } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { academyCategories } from "@/content/academy";
 import { caseStudies } from "@/content/caseStudies";
 import { posts } from "@/content/posts";
 import { primaryCta } from "@/content/site";
@@ -12,8 +11,6 @@ import { primaryCta } from "@/content/site";
 // (requirements.md §5.2). A real route always wins over this catch-all; delete an entry
 // once its page exists, and this file once the list is empty.
 const plannedPages: Record<string, string> = {
-  academy: "Learning Academy",
-  ...Object.fromEntries(academyCategories.map((c) => [`academy/${c.slug}`, c.title])),
   "case-studies": "Case Studies",
   ...Object.fromEntries(caseStudies.map((c) => [`case-studies/${c.slug}`, c.title])),
   blog: "Blog",
@@ -36,6 +33,9 @@ async function getTitle(params: PageProps<"/[...path]">["params"]) {
   const { path } = await params;
   return plannedPages[path.join("/")];
 }
+
+// Every path is prerendered, so a navigation here waits on one cached fetch (requirements §15.1).
+export const instant = false;
 
 export async function generateMetadata({ params }: PageProps<"/[...path]">): Promise<Metadata> {
   const title = await getTitle(params);

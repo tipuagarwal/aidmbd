@@ -1,10 +1,10 @@
 import { Check, Clock } from "lucide-react";
+import { ChoiceCard } from "@/components/ui/ChoiceCard";
 import { FieldError, SelectField } from "@/components/ui/Field";
 import { Overline } from "@/components/ui/Overline";
 import { bookingLabels, bookingPage, bookingTypes, getBookingType } from "@/content/booking";
 import { OTHER_INTEREST, type InterestGroup } from "@/lib/booking/schema";
 import type { BookingType } from "@/lib/types";
-import { ChoiceCard } from "../ChoiceCard";
 import type { StepProps } from "./types";
 
 /** Duration, fee, format and what to prepare for the chosen type (flow steps 1–2). */

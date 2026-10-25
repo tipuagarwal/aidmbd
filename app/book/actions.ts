@@ -4,13 +4,13 @@ import { bookingErrors } from "@/content/booking";
 import { sendBookingEmail } from "@/lib/booking/email";
 import { interestGroups } from "@/lib/booking/interests";
 import {
-  HONEYPOT_FIELD,
   interestLabel,
   interestValues,
   normalizeBooking,
   validateBooking,
   type BookingResult,
 } from "@/lib/booking/schema";
+import { HONEYPOT_FIELD } from "@/lib/forms";
 
 // Anyone can POST to a Server Action, so everything is validated again here.
 // Rate limiting arrives with the backend (requirements §15.2).

@@ -10,7 +10,6 @@ import { bookingErrors, bookingPage } from "@/content/booking";
 import {
   bookingFieldNames,
   emptyBooking,
-  HONEYPOT_FIELD,
   interestLabel,
   interestValues,
   normalizeBooking,
@@ -21,6 +20,7 @@ import {
   type InterestGroup,
 } from "@/lib/booking/schema";
 import { bookingSummary } from "@/lib/booking/summary";
+import { HONEYPOT_FIELD } from "@/lib/forms";
 import { BookingSuccess } from "./BookingSuccess";
 import { StepIndicator } from "./StepIndicator";
 import { DetailsStep } from "./steps/DetailsStep";

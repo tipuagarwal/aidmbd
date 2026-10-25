@@ -48,7 +48,7 @@ export function ReviewStep({ sections, onEdit, error }: ReviewStepProps) {
 
       <p className="text-sm leading-relaxed text-titanium-500">
         {copy.consent}{" "}
-        <Link href={copy.privacy.href} className="text-copper-400 underline-offset-4 hover:text-copper-300 hover:underline">
+        <Link href={copy.privacy.href} className="text-copper-400 underline decoration-copper-400/40 underline-offset-4 transition-colors hover:text-copper-300 hover:decoration-copper-300">
           {copy.privacy.label}
         </Link>
         .

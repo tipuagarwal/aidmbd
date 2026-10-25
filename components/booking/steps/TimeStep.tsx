@@ -1,11 +1,11 @@
 import { CalendarClock } from "lucide-react";
+import { ChoiceCard } from "@/components/ui/ChoiceCard";
 import { FieldError, SelectField, TextField } from "@/components/ui/Field";
 import { Overline } from "@/components/ui/Overline";
 import { bookingHints, bookingLabels, bookingPage, timeSlots } from "@/content/booking";
 import { BOOKING_WINDOW_DAYS } from "@/lib/booking/schema";
 import { describeTime } from "@/lib/booking/summary";
 import { addDays, zoneLabel } from "@/lib/booking/time";
-import { ChoiceCard } from "../ChoiceCard";
 import { useTimeZones, useToday } from "../useBrowserTime";
 import type { StepProps } from "./types";
 

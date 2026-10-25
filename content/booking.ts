@@ -89,10 +89,11 @@ export function getBookingType(slug: string) {
   return bookingTypes.find((type) => type.slug === slug);
 }
 
-/** Builds a /book link that pre-selects a booking type and, optionally, a service. */
-export function bookingHref(type: BookingTypeSlug, service?: string) {
+/** Builds a /book link that pre-selects a booking type and, optionally, a service or course path. */
+export function bookingHref(type: BookingTypeSlug, interest: { service?: string; course?: string } = {}) {
   const params = new URLSearchParams({ type });
-  if (service) params.set("service", service);
+  if (interest.service) params.set("service", interest.service);
+  if (interest.course) params.set("course", interest.course);
   return `/book?${params}`;
 }
 

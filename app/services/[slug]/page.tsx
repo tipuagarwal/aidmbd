@@ -14,6 +14,11 @@ export function generateStaticParams() {
   return services.map(({ slug }) => ({ slug }));
 }
 
+// Every slug is prerendered, so a navigation here waits on one cached fetch. Reading params
+// inside <Suspense> instead would let React paint a placeholder before this large page,
+// shifting the layout on direct visits (requirements §15.1).
+export const instant = false;
+
 export async function generateMetadata({ params }: PageProps<"/services/[slug]">): Promise<Metadata> {
   const service = getService((await params).slug);
   if (!service) return {};

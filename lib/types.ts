@@ -98,10 +98,69 @@ export type AcademyCategory = {
   title: string;
   icon: IconName;
   summary: string;
+  description: string;
   formats: CourseFormat[];
   modules: string[];
   advancedModules?: { title: string; modules: string[] };
   tracks?: ProgrammingTrack[];
+  /** Meeting type behind "Ask a question" for this path. */
+  guidance: BookingTypeSlug;
+};
+
+export type CourseLevel = "beginner" | "intermediate" | "advanced";
+
+/** "waitlist" until the client confirms the fee, schedule and instructor. */
+export type CourseStatus = "waitlist" | "enrolling";
+
+export type Instructor = {
+  name: string;
+  role: string;
+  bio: string;
+  /** Path under /public. */
+  photo: string;
+};
+
+export type Course = {
+  slug: string;
+  title: string;
+  category: AcademyCategory["slug"];
+  level: CourseLevel;
+  formats: CourseFormat[];
+  status: CourseStatus;
+  /** One line for cards. */
+  summary: string;
+  overview: string;
+  outcomes: string[];
+  prerequisites: string[];
+  /** Module titles in teaching order. */
+  syllabus: string[];
+  projects: string[];
+  language: string;
+  /** Notes, code, datasets and templates. */
+  resources: string[];
+  /** Quizzes, assignments and project assessment. */
+  assessment: string[];
+  certificate: string;
+  toolCosts: string;
+  /** Course-specific cautions, such as "no guaranteed publication". */
+  notes?: string[];
+  // Pending from the client. Unset values show as "announced at launch".
+  instructor?: Instructor;
+  /** Total lessons or class hours. */
+  duration?: string;
+  /** Next live batch: dates, time and timezone. */
+  schedule?: string;
+  fee?: string;
+  /** Support channel and how long support lasts. */
+  support?: string;
+  /** How long enrolled students keep access. */
+  access?: string;
+};
+
+/** The slice of a course that cards and the catalog filters need. */
+export type CourseSummary = Pick<Course, "slug" | "title" | "category" | "level" | "formats" | "status" | "summary"> & {
+  categoryTitle: string;
+  moduleCount: number;
 };
 
 export type CaseStudyCategory =

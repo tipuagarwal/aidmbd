@@ -7,6 +7,7 @@ import {
   timeSlots,
   timelines,
 } from "@/content/booking";
+import { cleanText, isEmail } from "@/lib/forms";
 import type { BookingField } from "@/lib/types";
 import { addDays, isIsoDate, isValidTimeZone, todayIn } from "./time";
 
@@ -40,8 +41,6 @@ export type BookingResult = { ok: true } | { ok: false; errors?: BookingErrors; 
 export type InterestOption = { value: string; label: string };
 export type InterestGroup = { id: "services" | "courses"; label: string; options: InterestOption[] };
 
-/** Spam trap: hidden from people, so only bots fill it in. */
-export const HONEYPOT_FIELD = "homepage";
 export const OTHER_INTEREST = "other";
 export const BOOKING_WINDOW_DAYS = 90;
 export const MESSAGE_MIN = 20;
@@ -64,7 +63,6 @@ const choices: Partial<Record<BookingFieldName, readonly string[]>> = {
   timeline: timelines,
 };
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE = /^\+?[\d\s().-]{7,25}$/;
 
 export const emptyBooking = Object.fromEntries(bookingFieldNames.map((name) => [name, ""])) as BookingValues;
@@ -82,10 +80,7 @@ export function interestLabel(value: string, groups: InterestGroup[]) {
   return value === OTHER_INTEREST ? bookingPage.interestOther : "";
 }
 
-/**
- * Trims every value and drops the optional fields the chosen meeting type doesn't ask for.
- * Forms post textarea line breaks as "\r\n"; normalizing keeps lengths equal on both sides.
- */
+/** Cleans every value and drops the optional fields the chosen meeting type doesn't ask for. */
 export function normalizeBooking(input: Partial<Record<string, unknown>>): BookingValues {
   const asked = new Set<string>(getBookingType(String(input.type ?? "").trim())?.fields);
   const values = { ...emptyBooking };
@@ -93,9 +88,7 @@ export function normalizeBooking(input: Partial<Record<string, unknown>>): Booki
     const value = input[name];
     if (typeof value !== "string") continue;
     if (typeFields.includes(name) && !asked.has(name)) continue;
-    const text = value.replace(/\r\n?/g, "\n").trim();
-    // Only the message may span lines.
-    values[name] = name === "message" ? text : text.replace(/\s+/g, " ");
+    values[name] = cleanText(value, name === "message");
   }
   return values;
 }
@@ -130,7 +123,7 @@ export function validateBooking(values: BookingValues, interests: readonly strin
 
   if (!values.fullName) errors.fullName = bookingErrors.fullName;
   if (!values.email) errors.email = bookingErrors.email;
-  else if (!EMAIL.test(values.email)) errors.email = bookingErrors.emailFormat;
+  else if (!isEmail(values.email)) errors.email = bookingErrors.emailFormat;
   if (values.phone && (!PHONE.test(values.phone) || values.phone.replace(/\D/g, "").length < 7)) {
     errors.phone = bookingErrors.phone;
   }

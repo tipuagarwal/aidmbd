@@ -1,8 +1,8 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 import { Container } from "./Container";
 
-type SectionProps = ComponentPropsWithoutRef<"section"> & {
+type SectionProps = ComponentProps<"section"> & {
   tone?: "base" | "raised";
 };
 
