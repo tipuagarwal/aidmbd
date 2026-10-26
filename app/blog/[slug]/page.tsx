@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostCard } from "@/components/blog/PostCard";
 import { BookingCta } from "@/components/sections/BookingCta";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { PageHero } from "@/components/sections/PageHero";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -10,6 +11,8 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { blogCategories, getPost, postPage, posts } from "@/content/posts";
 import { longDate } from "@/lib/format";
+import { pageMetadata } from "@/lib/metadata";
+import { articleSchema } from "@/lib/structuredData";
 
 export function generateStaticParams() {
   return posts.map(({ slug }) => ({ slug }));
@@ -21,12 +24,13 @@ export const instant = false;
 export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): Promise<Metadata> {
   const post = getPost((await params).slug);
   if (!post) return {};
-  return {
+  return pageMetadata({
     title: post.title,
     description: post.excerpt,
-    authors: [{ name: post.author }],
-    openGraph: { type: "article", publishedTime: post.publishedAt, modifiedTime: post.updatedAt },
-  };
+    path: `/blog/${post.slug}`,
+    article: { publishedTime: post.publishedAt, modifiedTime: post.updatedAt, authors: [post.author] },
+    ownImage: true,
+  });
 }
 
 export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
@@ -38,6 +42,7 @@ export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
 
   return (
     <>
+      <JsonLd data={articleSchema(post)} />
       <PageHero
         breadcrumbs={[
           { label: "Home", href: "/" },

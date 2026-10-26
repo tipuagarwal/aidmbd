@@ -5,12 +5,14 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
 import { faqGroups, faqPage, faqs } from "@/content/faqs";
+import { pageMetadata } from "@/lib/metadata";
 import type { FaqGroup } from "@/lib/types";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "FAQ",
   description: faqPage.description,
-};
+  path: "/faq",
+});
 
 const groups = (Object.keys(faqGroups) as FaqGroup[])
   .map((group) => ({ group, items: faqs.filter((faq) => faq.group === group) }))

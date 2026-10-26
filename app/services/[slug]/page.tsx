@@ -8,7 +8,10 @@ import { ServiceIncluded } from "@/components/services/ServiceIncluded";
 import { ServiceIntro } from "@/components/services/ServiceIntro";
 import { ServicePricing } from "@/components/services/ServicePricing";
 import { ServiceProof } from "@/components/services/ServiceProof";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getService, serviceDetail, services } from "@/content/services";
+import { pageMetadata } from "@/lib/metadata";
+import { serviceSchema } from "@/lib/structuredData";
 
 export function generateStaticParams() {
   return services.map(({ slug }) => ({ slug }));
@@ -22,7 +25,7 @@ export const instant = false;
 export async function generateMetadata({ params }: PageProps<"/services/[slug]">): Promise<Metadata> {
   const service = getService((await params).slug);
   if (!service) return {};
-  return { title: service.title, description: service.description };
+  return pageMetadata({ title: service.title, description: service.metaDescription, path: `/services/${service.slug}`, ownImage: true });
 }
 
 // Section order follows the service page template in requirements.md §7.1.
@@ -32,6 +35,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
 
   return (
     <>
+      <JsonLd data={serviceSchema(service)} />
       <ServiceIntro
         service={service}
         position={services.indexOf(service) + 1}

@@ -11,11 +11,13 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { aboutPage, founder } from "@/content/about";
 import { aboutSection } from "@/content/home";
 import { processSteps } from "@/content/process";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About",
   description: aboutPage.description,
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   const { purpose, areas, principles, process, team } = aboutPage;

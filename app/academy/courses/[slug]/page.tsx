@@ -7,10 +7,13 @@ import { CourseHero } from "@/components/academy/course/CourseHero";
 import { CourseOverview } from "@/components/academy/course/CourseOverview";
 import { CourseSyllabus } from "@/components/academy/course/CourseSyllabus";
 import { CourseCard } from "@/components/academy/CourseCard";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { coursePage, getAcademyCategory } from "@/content/academy";
 import { courses, getCourse, toCourseSummary } from "@/content/courses";
+import { pageMetadata } from "@/lib/metadata";
+import { courseSchema } from "@/lib/structuredData";
 
 export function generateStaticParams() {
   return courses.map(({ slug }) => ({ slug }));
@@ -24,7 +27,7 @@ export const instant = false;
 export async function generateMetadata({ params }: PageProps<"/academy/courses/[slug]">): Promise<Metadata> {
   const course = getCourse((await params).slug);
   if (!course) return {};
-  return { title: course.title, description: course.summary };
+  return pageMetadata({ title: course.title, description: course.summary, path: `/academy/courses/${course.slug}`, ownImage: true });
 }
 
 export default async function CoursePage({ params }: PageProps<"/academy/courses/[slug]">) {
@@ -40,6 +43,7 @@ export default async function CoursePage({ params }: PageProps<"/academy/courses
 
   return (
     <>
+      <JsonLd data={courseSchema(course)} />
       <CourseHero course={course} category={category} />
       <CourseOverview course={course} />
       <CourseSyllabus course={course} />

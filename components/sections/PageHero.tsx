@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { cn } from "@/lib/cn";
+import { breadcrumbSchema } from "@/lib/structuredData";
 import type { LinkItem } from "@/lib/types";
 
 type PageHeroProps = {
@@ -31,6 +33,7 @@ export function PageHero({ breadcrumbs, eyebrow, title, intro, children, aside, 
       >
         <div className={cn(hasAside && "lg:col-span-7")}>
           <Breadcrumb items={breadcrumbs} />
+          <JsonLd data={breadcrumbSchema(breadcrumbs)} />
           <Eyebrow className="mt-10">{eyebrow}</Eyebrow>
           <h1
             id="page-title"

@@ -571,6 +571,24 @@ Each type shows its duration, its fee (if any), its format (online or in person)
 - Unique title and description for every page, a sitemap and social preview images.
 - Later (Phase 7): secure authentication, role-based access and controlled course access.
 
+### 15.3 How Phase 6 implements SEO and polish
+- **Site address**: `SITE_URL` (see `.env.example`; on Vercel the production domain is used if it's unset) sets `metadataBase`, canonical URLs, the sitemap, `robots.txt`, social images and structured data. A production build warns if it's missing.
+- **Page metadata**: every page uses `pageMetadata()` (`lib/metadata.ts`) for title, description, canonical URL and complete Open Graph and Twitter cards.
+  - Next replaces, rather than merges, a parent's `openGraph`, so the helper always sets every field.
+  - It leaves `title` out on the home page, because an explicit `undefined` erases the layout's default title.
+  - Routes with their own image pass `ownImage: true`, because images set in metadata override a route's `opengraph-image` file.
+  - Service pages use a written `metaDescription` (160 characters or fewer). Academy path titles end in "Courses" so they don't clash with service names.
+- **Social images**: generated at build time by `lib/og.tsx` with the brand font (`assets/fonts`, SIL OFL). There's one default (`app/opengraph-image.tsx`) and one per service, Academy path, course, case study and article, 27 in all. Demo case studies carry "Demo Project" on their image.
+- **Sitemap and manifest**: `app/sitemap.ts` lists all 40 pages from the content files, with `lastModified` only where a real date exists. `app/robots.ts` points to it. `app/manifest.ts` is the web manifest.
+- **Structured data** (`lib/structuredData.ts`, rendered by `components/seo/JsonLd.tsx` with `<` escaped):
+  - Organization and WebSite on every page, and BreadcrumbList on every inner page (from `PageHero`).
+  - Service, Course and BlogPosting on their pages.
+  - No prices, ratings or schedules until confirmed. Add `sameAs` and `contactPoint` once social profiles and contact details exist.
+- **Security headers** (`next.config.ts`): a static Content Security Policy (no nonces, so pages stay prerendered), plus `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options` and `Permissions-Policy`. HSTS is left to the host.
+- **Scrolling**: `<html data-scroll-behavior="smooth">` lets Next turn smooth scrolling off during route changes (Next 16 behaviour).
+- **Images**: AVIF first, then WebP. The header logo source is 608px (master in `design/`) with a `sizes` hint, so it ships as a 256px AVIF of about 8 KB instead of a 384px image.
+- **Not done**: the optional Bangla version (§17). It needs a reviewed translation of every page and the client's go-ahead.
+
 ---
 
 ## 16. Code structure
@@ -585,8 +603,11 @@ app/
   academy/actions.ts  contact/actions.ts  careers/actions.ts   # Server Actions
   case-studies/page.tsx  case-studies/[slug]/page.tsx  blog/page.tsx  blog/[slug]/page.tsx
   about/  careers/  contact/  faq/  policies/[slug]/page.tsx
-  not-found.tsx  robots.ts  icon.png  apple-icon.png   (sitemap.ts, opengraph-image in Phase 6)
+  not-found.tsx  robots.ts  sitemap.ts  manifest.ts  icon.png  apple-icon.png
+  opengraph-image.tsx   # default social image; services/[slug], academy/[category],
+                        # academy/courses/[slug], case-studies/[slug], blog/[slug] have their own
 mdx-components.tsx      # long-form styles for MDX posts and policies
+assets/fonts/           # Plus Jakarta Sans TTFs (+ OFL licence) for social images
 components/
   layout/   Header.tsx  NavDropdown.tsx  MobileMenu.tsx  Footer.tsx  Logo.tsx  navStyles.ts
   ui/       Button.tsx  Container.tsx  Section.tsx  SectionHeading.tsx  Eyebrow.tsx  Overline.tsx
@@ -606,6 +627,7 @@ components/
             detail/  CaseStudyHero.tsx  CaseStudyMedia.tsx  CaseStudyStory.tsx
   blog/     PostCard.tsx  BlogCatalog.tsx (client)
   forms/    useFormSubmission.ts  FormParts.tsx (Honeypot, FormAlert, SubmitRow, FormSuccess)
+  seo/      JsonLd.tsx
   contact/  ContactForm.tsx      careers/  TalentPoolForm.tsx
   academy/  CategoryCard.tsx  CourseCard.tsx  FormatCard.tsx (Live or Recorded)
             CourseCatalog.tsx (client: filters + grid)  WaitlistForm.tsx (client)
@@ -624,9 +646,10 @@ content/    site.ts (nav, footer, socials, contact)  home.ts (homepage copy)  pr
 lib/        cn.ts  types.ts  format.ts (dates)  forms.ts (types, honeypot, checks, text cleanup)
             email.ts (server-only Resend delivery)  submit.ts (server-only shared action body)
             waitlist.ts  contactForm.ts  talentPool.ts (shared validators)
+            siteUrl.ts  metadata.ts (pageMetadata)  og.tsx (social images)  structuredData.ts
   booking/  schema.ts (shared validator)  time.ts (timezone helpers)  summary.ts (review and email rows)
             interests.ts (options built on the server)  email.ts (formats the meeting request)
-.env.example   # RESEND_API_KEY, EMAIL_TO, EMAIL_FROM
+.env.example   # RESEND_API_KEY, EMAIL_TO, EMAIL_FROM, SITE_URL
 public/brand/  logo.png  logo-mark.png      public/images/  founder.png  case-studies/*
 ```
 
@@ -696,10 +719,10 @@ Build `/book` as the multi-step request flow (§9) with a Server Action. Deliver
 ### Phase 5: Supporting pages
 Case Studies (filters and detail pages), Blog (MDX, categories), About (with `#team`), Careers (no-openings state and talent pool), Contact, FAQ, Policies.
 
-### Phase 6: SEO and polish
+### Phase 6: SEO and polish (done, see §15.3)
 - `sitemap.ts`, OG images, JSON-LD. (`robots.ts` shipped in Phase 1 and `not-found.tsx` in Phase 5.)
 - Full accessibility and Lighthouse pass, plus an image optimization review.
-- Optional: start the Bangla version through a `[lang]` segment (read `02-guides/internationalization.md`). The language switch opens the same page in the other language.
+- Optional, not started: the Bangla version through a `[lang]` segment (read `02-guides/internationalization.md`). The language switch opens the same page in the other language.
 
 ### Phase 7: Platform (after backend decisions)
 Auth and student dashboard, payments, admin panel, calendar booking (invites, reminders, reschedule), careers applications, certificate verification, community and newsletter, client portal.
@@ -726,7 +749,8 @@ Auth and student dashboard, payments, admin panel, calendar booking (invites, re
 - [ ] Team roles on About, the Careers copy and hiring process, and any real openings
 - [ ] The 2–3 courses to open first, each with fee (BDT/USD), schedule, instructor, duration, support and access terms; confirmation of the draft course text and teaching language in `content/courses.ts`
 - [ ] Decisions on payment, refund and cancellation
-- [ ] Domain and the necessary account access
+- [ ] Domain and the necessary account access, then set `SITE_URL` for production builds
+- [ ] Official social profile URLs (footer icons and the organization's structured data)
 
 ## 19. Open decisions (and the defaults used until decided)
 | Decision | Default |

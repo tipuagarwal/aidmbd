@@ -6,11 +6,13 @@ import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/ui/Section";
 import { bookingHref } from "@/content/booking";
 import { caseStudies, caseStudiesPage } from "@/content/caseStudies";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Case Studies",
   description: caseStudiesPage.description,
-};
+  path: "/case-studies",
+});
 
 export default function CaseStudiesPage() {
   return (

@@ -8,6 +8,7 @@ import { BookingCta } from "@/components/sections/BookingCta";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { caseStudies, caseStudiesPage, caseStudyPage, getCaseStudy, similarProjectHref } from "@/content/caseStudies";
+import { pageMetadata } from "@/lib/metadata";
 
 export function generateStaticParams() {
   return caseStudies.map(({ slug }) => ({ slug }));
@@ -19,7 +20,7 @@ export const instant = false;
 export async function generateMetadata({ params }: PageProps<"/case-studies/[slug]">): Promise<Metadata> {
   const study = getCaseStudy((await params).slug);
   if (!study) return {};
-  return { title: study.title, description: study.summary };
+  return pageMetadata({ title: study.title, description: study.summary, path: `/case-studies/${study.slug}`, ownImage: true });
 }
 
 export default async function CaseStudyPage({ params }: PageProps<"/case-studies/[slug]">) {

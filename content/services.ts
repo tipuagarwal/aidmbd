@@ -11,6 +11,8 @@ export const services: Service[] = [
     title: "AI & ML Learning",
     icon: "brain-circuit",
     summary: "Guidance, mentoring and training that turn AI concepts into real skills.",
+    metaDescription:
+      "AI and machine learning guidance, project mentoring and training for students, researchers, teachers and teams, built around hands-on practice.",
     description:
       "Personal guidance, project mentoring and institution-based training in AI and machine learning. Regular courses run in the AIDMBD Learning Academy; this service covers tailored learning for individuals, universities and teams.",
     problem:
@@ -66,6 +68,8 @@ export const services: Service[] = [
     title: "AI Automation",
     icon: "workflow",
     summary: "Automate repetitive work so your team can focus on what matters.",
+    metaDescription:
+      "AI automation for businesses: workflows, CRM and lead follow-up, chatbots and AI agents, with human review and clear setup and running costs.",
     description:
       "Automation design, integration and support that make repetitive business work simple and organized — from lead follow-ups and reminders to chatbots, document extraction and AI agents.",
     problem:
@@ -127,6 +131,8 @@ export const services: Service[] = [
     title: "AI Content Creation",
     icon: "sparkles",
     summary: "AI-assisted visuals, video and copy for your brand and your learners.",
+    metaDescription:
+      "AI-assisted content for your brand: social posts, visuals, short video, scripts and Bangla–English copy, with agreed quantities and revisions.",
     description:
       "AI-assisted creative production for businesses, personal brands and learning — social posts, product visuals, short videos, scripts, voiceovers and website copy in Bangla and English.",
     problem:
@@ -182,6 +188,8 @@ export const services: Service[] = [
     title: "Digital Marketing",
     icon: "megaphone",
     summary: "Reach the right audience and measure what your campaigns achieve.",
+    metaDescription:
+      "Digital marketing that reaches the right audience: strategy, social media, ads, SEO and lead campaigns, with clear reporting and separate ad budgets.",
     description:
       "Strategy, advertising, SEO and reporting that put your business in front of the right audience — with clear measurement so you can see what each campaign achieves.",
     problem:
@@ -236,6 +244,8 @@ export const services: Service[] = [
     title: "Web Development",
     icon: "code",
     summary: "Websites and web apps that are fast, clear and built to grow.",
+    metaDescription:
+      "Websites and web apps for businesses and educators: corporate sites, e-commerce, learning platforms, booking systems and custom dashboards.",
     description:
       "Websites and web applications for institutions, businesses and digital products — from landing pages and online stores to learning platforms, booking systems and custom dashboards.",
     problem:
@@ -292,6 +302,8 @@ export const services: Service[] = [
     title: "Virtual Assistant",
     icon: "headset",
     summary: "Reliable remote support for admin, research and daily operations.",
+    metaDescription:
+      "Remote virtual assistant support for email, scheduling, data entry, research, CRM updates and customer support, on hourly, monthly or task plans.",
     description:
       "Remote administrative, research and operational support — inbox and calendar management, data entry, research, documents, CRM updates and customer support assistance.",
     problem:

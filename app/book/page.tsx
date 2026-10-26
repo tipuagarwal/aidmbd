@@ -8,11 +8,13 @@ import { Section } from "@/components/ui/Section";
 import { bookingPage } from "@/content/booking";
 import { primaryCta } from "@/content/site";
 import { interestGroups } from "@/lib/booking/interests";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: primaryCta.label,
   description: bookingPage.description,
-};
+  path: "/book",
+});
 
 export default function BookPage() {
   return (

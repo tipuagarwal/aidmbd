@@ -8,6 +8,7 @@ import { Overline } from "@/components/ui/Overline";
 import { Section } from "@/components/ui/Section";
 import { getPolicy, policies, policyPage } from "@/content/policies";
 import { longDate } from "@/lib/format";
+import { pageMetadata } from "@/lib/metadata";
 
 export function generateStaticParams() {
   return policies.map(({ slug }) => ({ slug }));
@@ -19,7 +20,7 @@ export const instant = false;
 export async function generateMetadata({ params }: PageProps<"/policies/[slug]">): Promise<Metadata> {
   const policy = getPolicy((await params).slug);
   if (!policy) return {};
-  return { title: policy.title, description: policy.summary };
+  return pageMetadata({ title: policy.title, description: policy.summary, path: `/policies/${policy.slug}` });
 }
 
 export default async function PolicyPage({ params }: PageProps<"/policies/[slug]">) {

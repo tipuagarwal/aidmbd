@@ -9,11 +9,13 @@ import { Card } from "@/components/ui/Card";
 import { Icon } from "@/components/ui/Icon";
 import { Section } from "@/components/ui/Section";
 import { services, servicesPage } from "@/content/services";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Services",
   description: servicesPage.intro,
-};
+  path: "/services",
+});
 
 export default function ServicesPage() {
   return (

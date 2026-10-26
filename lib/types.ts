@@ -32,6 +32,8 @@ export type Service = {
   icon: IconName;
   /** One line for cards and the mega-menu. */
   summary: string;
+  /** For search results: 160 characters or fewer. */
+  metaDescription: string;
   description: string;
   /** The problem the service solves, for the detail page intro. */
   problem: string;

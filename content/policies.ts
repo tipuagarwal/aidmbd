@@ -26,7 +26,7 @@ export const policies: Policy[] = [
   {
     slug: "refund",
     title: "Refund Policy",
-    summary: "How refunds work for courses and services.",
+    summary: "How refunds work for AIDMBD courses and services, how third-party costs are handled, and how to ask for a refund.",
   },
   {
     slug: "cancellation",

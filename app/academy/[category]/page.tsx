@@ -25,6 +25,7 @@ import {
 import { bookingHref, getBookingType } from "@/content/booking";
 import { courses, toCourseSummary } from "@/content/courses";
 import { faqs } from "@/content/faqs";
+import { pageMetadata } from "@/lib/metadata";
 
 export function generateStaticParams() {
   return academyCategories.map(({ slug }) => ({ category: slug }));
@@ -38,7 +39,8 @@ export const instant = false;
 export async function generateMetadata({ params }: PageProps<"/academy/[category]">): Promise<Metadata> {
   const category = getAcademyCategory((await params).category);
   if (!category) return {};
-  return { title: category.title, description: category.description };
+  // "Courses" keeps paths distinct from services with the same name, such as AI Automation.
+  return pageMetadata({ title: `${category.title} Courses`, description: category.description, path: `/academy/${category.slug}`, ownImage: true });
 }
 
 export default async function CategoryPage({ params }: PageProps<"/academy/[category]">) {

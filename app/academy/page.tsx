@@ -12,11 +12,13 @@ import { academyCategories, academyPage } from "@/content/academy";
 import { bookingHref } from "@/content/booking";
 import { courses, toCourseSummary } from "@/content/courses";
 import { faqs } from "@/content/faqs";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Learning Academy",
   description: academyPage.description,
-};
+  path: "/academy",
+});
 
 const guidance = { label: "Book Learning Guidance", href: bookingHref("learning-guidance") };
 

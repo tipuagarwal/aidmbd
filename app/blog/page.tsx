@@ -4,11 +4,13 @@ import { BookingCta } from "@/components/sections/BookingCta";
 import { PageHero } from "@/components/sections/PageHero";
 import { Section } from "@/components/ui/Section";
 import { blogPage, posts, postPage } from "@/content/posts";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Blog",
   description: blogPage.description,
-};
+  path: "/blog",
+});
 
 export default function BlogPage() {
   return (

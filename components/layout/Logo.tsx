@@ -10,6 +10,7 @@ export function Logo({ className }: { className?: string }) {
         alt="AIDMBD International Ltd — home"
         width={152}
         height={44}
+        sizes="(min-width: 1024px) 152px, 124px"
         loading="eager"
         className="h-9 w-auto lg:h-11"
       />

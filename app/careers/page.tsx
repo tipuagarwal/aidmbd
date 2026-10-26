@@ -9,11 +9,13 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { careersPage, openings } from "@/content/careers";
 import { longDate } from "@/lib/format";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Careers",
   description: careersPage.description,
-};
+  path: "/careers",
+});
 
 export default function CareersPage() {
   const { why, openings: openingsCopy, process, talentPool, privacy } = careersPage;

@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
+import { absoluteUrl } from "@/lib/siteUrl";
 
-// The sitemap entry is added in Phase 6, once the production domain is known.
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: { userAgent: "*", allow: "/" },
+    sitemap: absoluteUrl("/sitemap.xml"),
   };
 }

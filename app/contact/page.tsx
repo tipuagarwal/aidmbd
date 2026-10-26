@@ -7,11 +7,13 @@ import { Card } from "@/components/ui/Card";
 import { Overline } from "@/components/ui/Overline";
 import { Section } from "@/components/ui/Section";
 import { contactDetails, contactPage } from "@/content/contact";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
   description: contactPage.description,
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   const { form, book, support, details } = contactPage;
